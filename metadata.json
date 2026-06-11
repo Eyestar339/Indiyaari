@@ -1,0 +1,6 @@
+{
+  "name": "Indiyaari",
+  "description": "Interest-based 1-1 connections, themed group rooms, private encrypted messaging & automated AI moderation.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
