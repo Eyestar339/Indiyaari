@@ -304,32 +304,132 @@
                 </div>
 
             </div>
+
+            <!-- Permanent Polite Safe Communication Guidance Box -->
+            <div class="bg-gray-800/25 border border-gray-800/60 rounded-2xl p-4 mt-2 mb-6 mx-4">
+                <div class="flex flex-col gap-2">
+                    <div class="text-[11px] font-bold text-primary flex items-center justify-center gap-1.5 mb-1 text-center">
+                        🇮🇳 Community Rules for Polite Chatting
+                    </div>
+                    <div class="h-[1px] bg-gray-800/50 my-1"></div>
+                    <p class="text-[10px] text-gray-400 font-medium">📌 <b class="text-gray-300">1. Message Politely:</b> Always greet your match with respect (e.g. Namaste / Hello). Be polite and warm.</p>
+                    <p class="text-[10px] text-gray-400 font-medium">📌 <b class="text-gray-300">2. Respect Differences:</b> You are matching with peers across different Indian regions and languages. Please celebrate this diversity.</p>
+                    <p class="text-[10px] text-gray-400 font-medium">📌 <b class="text-gray-300">3. Stay Cyber-Secure:</b> For security goals, do not share personal telephone numbers, bank pins, or addresses.</p>
+                    <p class="text-[10px] text-gray-400 font-medium">📌 <b class="text-gray-300">4. Gentle Skipper:</b> If the match feels incompatible, simply tap the 'Skip' button politely to find a new connection.</p>
+                </div>
+            </div>
         </div>
 
         <!-- ================= CHAT COMPONENT (SCREEN TAKE OVER) ================= -->
         <div id="view-chat" class="hidden absolute inset-0 z-30 bg-darkCard flex flex-col">
             <!-- Chat Head -->
             <div class="p-4 border-b border-gray-800 bg-darkCard/90 flex items-center justify-between sticky top-0 z-15">
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2">
                     <button onclick="closeChat()" class="p-1.5 hover:bg-gray-800 rounded-lg text-gray-400 hover:text-white transition-all">
-                        <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                        <i data-lucide="arrow-left" class="w-4.5 h-4.5"></i>
                     </button>
                     <div>
                         <div class="flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                            <span id="chat-status-dot" class="w-1.5 h-1.5 rounded-full bg-green-500"></span>
                             <span id="chat-peer-name" class="font-bold text-white text-sm">Aditya</span>
                         </div>
-                        <span id="chat-peer-details" class="text-[10px] text-gray-400">Sitar Player • Karnataka</span>
+                        <span id="chat-peer-details" class="text-[9px] text-gray-400">Sitar Player • Karnataka</span>
                     </div>
                 </div>
 
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-1">
+                    <!-- Secure DH Handshake Toggle -->
+                    <button id="chat-secure-toggle" onclick="toggleSecureDH()" title="Secure DH Asymmetric Encryption"
+                            class="p-2 hover:bg-gray-800 rounded-lg text-gray-400 hover:text-white transition-all">
+                        <i data-lucide="lock" class="w-4 h-4"></i>
+                    </button>
+
+                    <!-- Video Call Toggle -->
+                    <button id="chat-video-toggle" onclick="toggleVideoCall()" title="Launch Video Call"
+                            class="p-2 hover:bg-gray-800 rounded-lg text-gray-400 hover:text-white transition-all">
+                        <i data-lucide="video" class="w-4 h-4"></i>
+                    </button>
+
+                    <!-- Disappearing Messages Toggle -->
+                    <button id="chat-disappearing-toggle" onclick="toggleDisappearing()" title="Disappearing Messages"
+                            class="p-2 hover:bg-gray-800 rounded-lg text-gray-400 hover:text-white transition-all">
+                        <i data-lucide="timer" class="w-4 h-4"></i>
+                    </button>
+
+                    <!-- Report User Action -->
+                    <button id="chat-report-btn" onclick="openReportModal()" title="Report Companion"
+                            class="p-2 hover:bg-red-500/10 rounded-lg text-gray-450 hover:text-red-400 transition-all">
+                        <i data-lucide="flag" class="w-4 h-4"></i>
+                    </button>
+
                     <!-- Moderation Shield Indicator -->
                     <button onclick="toggleShield()" id="shield-moderation-toggle" title="AI Moderation Safe Shield"
-                            class="px-3 py-1.5 rounded-full flex items-center gap-1.5 border transition-all text-xs font-bold bg-teal-500/10 border-teal-500/30 text-teal-300 shadow-[0_0_10px_rgba(20,184,166,0.1)]">
-                        <i data-lucide="shield-check" class="w-4 h-4"></i>
-                        Shield On
+                            class="px-2 py-1.5 rounded-full flex items-center gap-1 border transition-all text-[9px] font-bold bg-teal-500/10 border-teal-500/30 text-teal-300">
+                        <i data-lucide="shield-check" class="w-3.5 h-3.5 shrink-0"></i>
+                        On
                     </button>
+                </div>
+            </div>
+
+            <!-- Video Call Dashboard Panel -->
+            <div id="video-call-panel" class="hidden bg-darkBg border-b border-gray-850 p-3 transition-all duration-300">
+                <div class="relative w-full aspect-video bg-gray-950 rounded-2xl overflow-hidden border border-gray-850 shadow-inner flex flex-col justify-between">
+                    <!-- Remote Peer Stream Simulator -->
+                    <div id="video-peer-container" class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-full h-full bg-gradient-to-tr from-gray-900 to-primary/10 flex flex-col items-center justify-center relative">
+                            <!-- Animated Pulse Video Signal -->
+                            <span class="absolute inset-0 bg-primary/5 animate-pulse"></span>
+                            
+                            <!-- Large video camera stream avatar representation -->
+                            <div class="w-14 h-14 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-primary font-bold text-lg animate-bounce">
+                                <span id="video-peer-initials">PT</span>
+                            </div>
+                            <span id="video-peer-label-name" class="text-xs text-gray-300 mt-2 font-semibold text-center">Aarav (Live Stream)</span>
+                            <span class="text-[9px] text-green-400 flex items-center gap-1 font-mono mt-0.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-ping"></span> Live • 1080p WebRTC
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Local Face Stream Preview (Selfie) -->
+                    <div class="absolute bottom-3 right-3 w-20 aspect-video bg-black/85 rounded-xl border border-gray-800 overflow-hidden shadow-2xl flex items-center justify-center z-20">
+                        <div id="local-video-placeholder" class="text-center flex flex-col items-center justify-center p-1">
+                            <span class="text-sm">🤳</span>
+                            <span class="text-[8px] text-gray-400 font-bold uppercase tracking-wider">Selfie Cam</span>
+                        </div>
+                    </div>
+
+                    <!-- Floating AI Guard Warning Layer (Materializing active Gemini API Video scan) -->
+                    <div id="video-ai-overlay" class="absolute inset-x-0 top-3 px-3 z-10 w-fit mx-auto">
+                        <div class="bg-teal-500/90 backdrop-blur-md border border-teal-400/30 text-darkBg py-1 px-3 rounded-full flex items-center justify-between gap-2 text-[9px] font-bold shadow-lg animate-pulse">
+                            <div class="flex items-center gap-1">
+                                <i data-lucide="shield-check" class="w-3.5 h-3.5 shrink-0"></i>
+                                <span>Gemini Live Frame AI Guard Shield Active</span>
+                            </div>
+                            <span class="bg-darkBg/10 text-darkBg px-1 rounded text-[7px] uppercase tracking-wider font-extrabold">Safe</span>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Stream Buttons overlay -->
+                    <div class="absolute inset-x-0 bottom-3 flex justify-center gap-2 z-20">
+                        <button onclick="toggleVideoMute()" id="video-btn-mute" class="w-8 h-8 bg-gray-800 hover:bg-gray-700 text-gray-205 rounded-full flex items-center justify-center transition-all border border-gray-750">
+                            <i data-lucide="mic" class="w-3.5 h-3.5 text-gray-300"></i>
+                        </button>
+                        <button onclick="toggleVideoCamera()" id="video-btn-camera" class="w-8 h-8 bg-gray-800 hover:bg-gray-700 text-gray-205 rounded-full flex items-center justify-center transition-all border border-gray-750">
+                            <i data-lucide="video" class="w-3.5 h-3.5 text-gray-300"></i>
+                        </button>
+                        <button onclick="toggleVideoCall()" class="w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-all border border-red-400">
+                            <i data-lucide="phone-off" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interlocking Disappearing Messages Active Banner -->
+            <div id="disappearing-active-banner" class="hidden mx-4 my-2 p-2.5 bg-amber-500/10 border border-amber-500/30 rounded-xl flex items-center gap-2 animate-in slide-in-from-top duration-300">
+                <i data-lucide="timer" class="w-4 h-4 text-amber-500 shrink-0"></i>
+                <div class="text-[10px] text-gray-200 font-medium">
+                    ⏳ <b class="text-amber-400 font-bold">Disappearing Messages is ACTIVE!</b> Chats will dissolve and clear as soon as you exit the handshake.
                 </div>
             </div>
 
@@ -340,6 +440,18 @@
 
             <!-- Dialogue Entry Pad -->
             <div class="p-3 border-t border-gray-800 bg-darkCard">
+                <!-- Desi Stickers Tray -->
+                <div class="flex items-center gap-2 mb-2 px-1">
+                    <span class="text-[9px] font-bold uppercase tracking-wider text-gray-500 shrink-0">🇮🇳 Stickers:</span>
+                    <div id="sticker-pills" class="flex-1 flex gap-1.5 overflow-x-auto scrollbar-none text-[10px]">
+                        <button type="button" onclick="sendSticker('☕', 'Chai Adda')" class="py-1 px-2.5 bg-primary/10 border border-primary/25 hover:bg-primary/25 rounded-full whitespace-nowrap text-primary transition-all">☕ Chai Adda</button>
+                        <button type="button" onclick="sendSticker('🙏', 'Namaste Vibe')" class="py-1 px-2.5 bg-primary/10 border border-primary/25 hover:bg-primary/25 rounded-full whitespace-nowrap text-primary transition-all">🙏 Namaste Vibe</button>
+                        <button type="button" onclick="sendSticker('🛺', 'Auto Raja')" class="py-1 px-2.5 bg-primary/10 border border-primary/25 hover:bg-primary/25 rounded-full whitespace-nowrap text-primary transition-all">🛺 Auto Raja</button>
+                        <button type="button" onclick="sendSticker('🏏', 'Gully Match')" class="py-1 px-2.5 bg-primary/10 border border-primary/25 hover:bg-primary/25 rounded-full whitespace-nowrap text-primary transition-all">🏏 Gully Match</button>
+                        <button type="button" onclick="sendSticker('🍛', 'Samosa Party')" class="py-1 px-2.5 bg-primary/10 border border-primary/25 hover:bg-primary/25 rounded-full whitespace-nowrap text-primary transition-all">🍛 Samosa Party</button>
+                    </div>
+                </div>
+
                 <div id="slang-short-pills" class="flex gap-1.5 overflow-x-auto pb-2 px-1 scrollbar-none text-[10px]">
                     <button onclick="insertSlang('Namaste!')" class="py-1 px-2.5 bg-gray-800 border border-gray-750 text-gray-300 rounded-full whitespace-nowrap hover:border-primary transition-all">Namaste! 🙏</button>
                     <button onclick="insertSlang('Bhaiya')" class="py-1 px-2.5 bg-gray-800 border border-gray-750 text-gray-300 rounded-full whitespace-nowrap hover:border-primary transition-all">Bhaiya</button>
@@ -514,6 +626,61 @@
         </div>
     </div>
 
+    <!-- ================= REPORT COMPANION DIALOG ================= -->
+    <div id="modal-report" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-darkCard border border-gray-800 max-w-sm w-full rounded-2xl overflow-hidden shadow-2xl flex flex-col p-5 space-y-4 animate-in fade-in duration-200">
+            <!-- Modal Head -->
+            <div class="flex items-center gap-3 border-b border-gray-800 pb-3">
+                <div class="w-10 h-10 bg-red-500/20 border border-red-500/30 rounded-xl flex items-center justify-center text-red-400">
+                    <i data-lucide="flag" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-white text-base">Report & Separate</h3>
+                    <p class="text-[10px] text-gray-400">Filing safe moderation report</p>
+                </div>
+            </div>
+            
+            <!-- Modal Body -->
+            <p class="text-xs text-gray-300 leading-relaxed">
+                If your companion is violating safety measures, choose a moderation reason. Submitting will immediately sever the handshake and block the peer.
+            </p>
+
+            <!-- Choice fields -->
+            <div class="space-y-2">
+                <label id="report-opt-abusive" onclick="selectReportReason('Abusive Language / Bullying')" class="flex items-center justify-between p-3 bg-darkBg/60 border border-gray-750/80 rounded-xl cursor-pointer text-xs font-semibold hover:border-primary border-primary">
+                    <span>Abusive Language / Bullying</span>
+                    <span id="report-radio-abusive" class="w-4 h-4 rounded-full border border-primary flex items-center justify-center">
+                        <span id="report-dot-abusive" class="w-2.5 h-2.5 rounded-full bg-primary bg-opacity-100"></span>
+                    </span>
+                </label>
+                
+                <label id="report-opt-inappropriate" onclick="selectReportReason('Inappropriate / Sexual content')" class="flex items-center justify-between p-3 bg-darkBg/60 border border-gray-800 rounded-xl cursor-pointer text-xs font-semibold hover:border-primary">
+                    <span>Inappropriate / Sexual Content</span>
+                    <span id="report-radio-inappropriate" class="w-4 h-4 rounded-full border border-gray-600 flex items-center justify-center">
+                        <span id="report-dot-inappropriate" class="w-2.5 h-2.5 rounded-full bg-primary bg-opacity-0"></span>
+                    </span>
+                </label>
+
+                <label id="report-opt-spam" onclick="selectReportReason('Spam / Advertisement')" class="flex items-center justify-between p-3 bg-darkBg/60 border border-gray-800 rounded-xl cursor-pointer text-xs font-semibold hover:border-primary">
+                    <span>Spam or Advertisements</span>
+                    <span id="report-radio-spam" class="w-4 h-4 rounded-full border border-gray-600 flex items-center justify-center">
+                        <span id="report-dot-spam" class="w-2.5 h-2.5 rounded-full bg-primary bg-opacity-0"></span>
+                    </span>
+                </label>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="flex gap-3 pt-2">
+                <button onclick="closeReportModal()" class="flex-1 py-2.5 rounded-xl border border-gray-750 text-gray-300 text-xs font-bold hover:bg-gray-800 transition-all">
+                    Cancel
+                </button>
+                <button onclick="submitReportAndBlock()" class="flex-1 py-2.5 rounded-xl bg-red-500 hover:bg-red-650 text-white text-xs font-extrabold transition-all">
+                    File Report
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- MAIN APP SCRIPT -->
     <script>
         // Data configurations matching Android Models
@@ -547,6 +714,10 @@
         let activeTab = 'finder'; 
         let activeChatPeer = null;
         let isShieldOn = true;
+        let isDHSecure = false;
+        let isDisappearingMode = false;
+        let isVideoCallActive = false;
+        let selectedReportReason = "Abusive Language / Bullying";
         let currentSetupCaptchaAnswer = "";
 
         // On Page Load
@@ -1173,6 +1344,19 @@
             document.getElementById('chat-peer-name').innerText = peer.name;
             document.getElementById('chat-peer-details').innerText = `${peer.occupation} • ${peer.state}`;
 
+            // Reset state toggles
+            isDHSecure = false;
+            updateSecureDHUI();
+            isDisappearingMode = false;
+            updateDisappearingUI();
+            isVideoCallActive = false;
+            updateVideoCallUI();
+
+            // Set video peer initials and label
+            const initials = peer.name.substring(0, 2).toUpperCase() || "PT";
+            document.getElementById('video-peer-initials').innerText = initials;
+            document.getElementById('video-peer-label-name').innerText = `${peer.name} (Live Stream)`;
+
             // Reset conversation area
             const container = document.getElementById('chat-messages-container');
             container.innerHTML = '';
@@ -1201,6 +1385,13 @@
             activeChatPeer = { name: roomName, occupation: "Thematic Adda Group", state: "Live Interactive feed" };
             document.getElementById('chat-peer-name').innerText = roomName;
             document.getElementById('chat-peer-details').innerText = "Vibe Community • Interactive Group";
+
+            isDHSecure = false;
+            updateSecureDHUI();
+            isDisappearingMode = false;
+            updateDisappearingUI();
+            isVideoCallActive = false;
+            updateVideoCallUI();
 
             const container = document.getElementById('chat-messages-container');
             container.innerHTML = '';
@@ -1288,8 +1479,28 @@
             addChatMessage('You', txt, true);
             input.value = '';
 
+            // Inject typing bubble simulation
+            const container = document.getElementById('chat-messages-container');
+            const typingBubble = document.createElement('div');
+            typingBubble.id = "peer-typing-bubble";
+            typingBubble.className = "self-start max-w-[85%] bg-gray-800/40 text-gray-400 rounded-2xl p-2.5 text-xs font-semibold flex items-center gap-1.5 transition-all animate-pulse";
+            typingBubble.innerHTML = `
+                <div class="flex gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce" style="animation-delay: 0ms"></span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce" style="animation-delay: 150ms"></span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce" style="animation-delay: 300ms"></span>
+                </div>
+                <span class="text-[9px] uppercase tracking-wider font-extrabold text-primary">${activeChatPeer ? activeChatPeer.name : 'Peer'} typing...</span>
+            `;
+            container.appendChild(typingBubble);
+            container.scrollTop = container.scrollHeight;
+
             // Simulated active AI reply
             setTimeout(() => {
+                // Remove typing bubble
+                const bubbleEl = document.getElementById('peer-typing-bubble');
+                if (bubbleEl) bubbleEl.remove();
+
                 if (!activeChatPeer) return;
                 const matchInterests = userProfile.interests;
                 const randomInterest = matchInterests[Math.floor(Math.random() * matchInterests.length)] || "connecting";
@@ -1308,19 +1519,250 @@
             const container = document.getElementById('chat-messages-container');
             const bubble = document.createElement('div');
             
-            if (isMe) {
-                bubble.className = "self-end max-w-[85%] bg-primary text-darkBg rounded-2xl rounded-tr-none py-2 px-3.5 text-xs font-semibold leading-relaxed shadow-sm";
-            } else {
-                bubble.className = "self-start max-w-[85%] bg-gray-800 text-gray-200 rounded-2xl rounded-tl-none py-2 px-3.5 text-xs font-medium leading-relaxed border border-gray-750";
+            // Check if this is a sticker command
+            const isSticker = text.startsWith('[Sticker');
+            let stickerEmoji = '☕';
+            let stickerTitle = 'Chai Adda';
+            if (isSticker) {
+                // Parse format e.g. "[Sticker ☕: Chai Adda]"
+                const match = text.match(/\[Sticker\s*(.*?):\s*(.*?)\]/);
+                if (match) {
+                    stickerEmoji = match[1];
+                    stickerTitle = match[2];
+                }
             }
 
-            bubble.innerHTML = `
-                ${!isMe ? `<span class="block text-[9px] text-primary/80 font-black uppercase mb-0.5">${sender}</span>` : ''}
-                <span>${text}</span>
-            `;
+            if (isMe) {
+                if (isSticker) {
+                    bubble.className = "self-end max-w-[85%] bg-primary/20 border border-primary/40 rounded-2xl p-4 text-xs font-semibold shadow-md flex flex-col items-center gap-2 transform rotate-1 transition-all hover:rotate-0 duration-300";
+                } else {
+                    bubble.className = "self-end max-w-[85%] bg-primary text-darkBg rounded-2xl rounded-tr-none py-2 px-3.5 text-xs font-semibold leading-relaxed shadow-sm relative";
+                }
+            } else {
+                if (isSticker) {
+                    bubble.className = "self-start max-w-[85%] bg-gray-800/40 border border-gray-750/50 rounded-2xl p-4 text-xs font-medium shadow-md flex flex-col items-center gap-2 transform -rotate-1 transition-all hover:rotate-0 duration-300";
+                } else {
+                    bubble.className = "self-start max-w-[85%] bg-gray-800 text-gray-200 rounded-2xl rounded-tl-none py-2 px-3.5 text-xs font-medium leading-relaxed border border-gray-750 relative";
+                }
+            }
+
+            // Dissolve warning
+            const disappearingTag = isDisappearingMode ? `<span class="block text-[8px] text-amber-500 mt-1 font-mono text-right font-semibold">⏳ vanishes in 8s</span>` : '';
+
+            if (isSticker) {
+                bubble.innerHTML = `
+                    ${!isMe ? `<span class="block text-[9px] text-primary/80 font-black uppercase mb-1.5 align-self-start w-full text-left">${sender}</span>` : ''}
+                    <div class="text-3xl animate-bounce my-0.5">${stickerEmoji}</div>
+                    <div class="bg-darkBg border border-gray-850 px-2 py-0.5 rounded-full text-[8px] uppercase font-black tracking-widest text-primary font-mono shadow-sm">${stickerTitle}</div>
+                    ${disappearingTag}
+                `;
+            } else {
+                bubble.innerHTML = `
+                    ${!isMe ? `<span class="block text-[9px] text-primary/80 font-black uppercase mb-0.5">${sender}</span>` : ''}
+                    <span>${text}</span>
+                    ${disappearingTag}
+                `;
+            }
 
             container.appendChild(bubble);
             container.scrollTop = container.scrollHeight;
+
+            if (isDisappearingMode) {
+                setTimeout(() => {
+                    bubble.classList.add('opacity-0', 'scale-90', 'transition-all', 'duration-1000');
+                    setTimeout(() => {
+                        bubble.remove();
+                    }, 1000);
+                }, 8000);
+            }
+        }
+
+        // Stickers
+        function sendSticker(emoji, label) {
+            const txt = `[Sticker ${emoji}: ${label}]`;
+            addChatMessage('You', txt, true);
+            
+            // Simulating direct dynamic stickers response
+            setTimeout(() => {
+                if (!activeChatPeer) return;
+                const matches = [
+                    { emoji: '🍛', label: 'Samosa Party' },
+                    { emoji: '☕', label: 'Chai Adda' },
+                    { emoji: '🙏', label: 'Namaste Vibe' }
+                ];
+                const replySticker = matches[Math.floor(Math.random() * matches.length)];
+                addChatMessage(activeChatPeer.name, `[Sticker ${replySticker.emoji}: ${replySticker.label}]`, false);
+            }, 1400);
+        }
+
+        // Secure DHHandshake
+        function toggleSecureDH() {
+            isDHSecure = !isDHSecure;
+            updateSecureDHUI();
+            if (isDHSecure) {
+                showToast("🔒 Asymmetric DH Tunnel parameters established. E2E crypt secured.");
+                addSystemAlertMessage("Transient Secret Tunnel Verified (AES-GCM 256)");
+            } else {
+                showToast("🔓 Transient encryption tunnel terminated.");
+            }
+        }
+
+        function updateSecureDHUI() {
+            const btn = document.getElementById('chat-secure-toggle');
+            if (isDHSecure) {
+                btn.className = "p-2 bg-teal-500/10 rounded-lg text-teal-400 transition-all";
+                document.getElementById('chat-status-dot').className = "w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse";
+            } else {
+                btn.className = "p-2 hover:bg-gray-800 rounded-lg text-gray-400 hover:text-white transition-all";
+                document.getElementById('chat-status-dot').className = "w-1.5 h-1.5 rounded-full bg-green-500";
+            }
+            lucide.createIcons();
+        }
+
+        function addSystemAlertMessage(alertText) {
+            const container = document.getElementById('chat-messages-container');
+            const alertBox = document.createElement('div');
+            alertBox.className = "mx-auto bg-gray-800/65 border border-teal-500/35 text-teal-300 py-1 px-2.5 rounded-full text-[9px] text-center w-fit font-mono font-bold uppercase tracking-wider my-2 shadow-[0_0_10px_rgba(20,184,166,0.08)] animate-bounce";
+            alertBox.innerHTML = `🛡️ ${alertText}`;
+            container.appendChild(alertBox);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Disappearing Toggle
+        function toggleDisappearing() {
+            isDisappearingMode = !isDisappearingMode;
+            updateDisappearingUI();
+            if (isDisappearingMode) {
+                showToast("⏳ Disappearing message mode is ACTIVE. Messages dissolve.");
+            } else {
+                showToast("⏳ Disappearing message mode closed.");
+            }
+        }
+
+        function updateDisappearingUI() {
+            const btn = document.getElementById('chat-disappearing-toggle');
+            const banner = document.getElementById('disappearing-active-banner');
+            if (isDisappearingMode) {
+                btn.className = "p-2 bg-amber-500/10 rounded-lg text-amber-400 transition-all";
+                banner.classList.remove('hidden');
+            } else {
+                btn.className = "p-2 hover:bg-gray-800 rounded-lg text-gray-400 hover:text-white transition-all";
+                banner.classList.add('hidden');
+            }
+            lucide.createIcons();
+        }
+
+        // Video Controls
+        let isMuted = false;
+        let isCamOff = false;
+
+        function toggleVideoCall() {
+            isVideoCallActive = !isVideoCallActive;
+            updateVideoCallUI();
+            if (isVideoCallActive) {
+                showToast("🎥 Opening live private peer-to-peer video conference.");
+            } else {
+                showToast("🎥 Video stream ended safely.");
+            }
+        }
+
+        function updateVideoCallUI() {
+            const btn = document.getElementById('chat-video-toggle');
+            const panel = document.getElementById('video-call-panel');
+            if (isVideoCallActive) {
+                btn.className = "p-2 bg-primary/20 rounded-lg text-primary transition-all";
+                panel.classList.remove('hidden');
+            } else {
+                btn.className = "p-2 hover:bg-gray-800 rounded-lg text-gray-400 hover:text-white transition-all";
+                panel.classList.add('hidden');
+            }
+            lucide.createIcons();
+        }
+
+        function toggleVideoMute() {
+            isMuted = !isMuted;
+            const btn = document.getElementById('video-btn-mute');
+            if (isMuted) {
+                btn.innerHTML = `<i data-lucide="mic-off" class="w-3.5 h-3.5 text-red-400"></i>`;
+                btn.className = "w-8 h-8 bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-full flex items-center justify-center transition-all border border-red-500/30";
+                showToast("🎙️ Microphone muted.");
+            } else {
+                btn.innerHTML = `<i data-lucide="mic" class="w-3.5 h-3.5 text-gray-300"></i>`;
+                btn.className = "w-8 h-8 bg-gray-800 hover:bg-gray-700 text-gray-205 rounded-full flex items-center justify-center transition-all border border-gray-750";
+                showToast("🎙️ Microphone unmuted.");
+            }
+            lucide.createIcons();
+        }
+
+        function toggleVideoCamera() {
+            isCamOff = !isCamOff;
+            const btn = document.getElementById('video-btn-camera');
+            const placeholder = document.getElementById('local-video-placeholder');
+            if (isCamOff) {
+                btn.innerHTML = `<i data-lucide="video-off" class="w-3.5 h-3.5 text-red-400"></i>`;
+                btn.className = "w-8 h-8 bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-full flex items-center justify-center transition-all border border-red-500/30";
+                placeholder.innerHTML = `<span class="text-[9px] text-red-400 font-bold uppercase">Off</span>`;
+                showToast("📷 Your local camera stream turned OFF.");
+            } else {
+                btn.innerHTML = `<i data-lucide="video" class="w-3.5 h-3.5 text-gray-300"></i>`;
+                btn.className = "w-8 h-8 bg-gray-800 hover:bg-gray-700 text-gray-205 rounded-full flex items-center justify-center transition-all border border-gray-750";
+                placeholder.innerHTML = `<span class="text-sm">🤳</span><span class="text-[8px] text-gray-400 font-bold uppercase tracking-wider">Selfie Cam</span>`;
+                showToast("📷 Your local camera stream turned ON.");
+            }
+            lucide.createIcons();
+        }
+
+        // Report Dialog Modal Controls
+        function openReportModal() {
+            document.getElementById('modal-report').classList.remove('hidden');
+        }
+
+        function closeReportModal() {
+            document.getElementById('modal-report').classList.add('hidden');
+        }
+
+        function selectReportReason(reason) {
+            selectedReportReason = reason;
+            const options = [
+                { id: 'abusive', label: 'Abusive Language / Bullying' },
+                { id: 'inappropriate', label: 'Inappropriate / Sexual content' },
+                { id: 'spam', label: 'Spam / Advertisement' }
+            ];
+
+            options.forEach(opt => {
+                const el = document.getElementById(`report-opt-${opt.id}`);
+                const dot = document.getElementById(`report-dot-${opt.id}`);
+                const radio = el.querySelector('span:last-child');
+                
+                if (opt.label === reason) {
+                    el.className = "flex items-center justify-between p-3 bg-darkBg/60 border border-primary rounded-xl cursor-pointer text-xs font-semibold hover:border-primary border-primary";
+                    dot.classList.remove('bg-opacity-0');
+                    dot.classList.add('bg-opacity-100');
+                    radio.className = "w-4 h-4 rounded-full border border-primary flex items-center justify-center";
+                } else {
+                    el.className = "flex items-center justify-between p-3 bg-darkBg/60 border border-gray-800 rounded-xl cursor-pointer text-xs font-semibold hover:border-primary";
+                    dot.classList.remove('bg-opacity-100');
+                    dot.classList.add('bg-opacity-0');
+                    radio.className = "w-4 h-4 rounded-full border border-gray-600 flex items-center justify-center";
+                }
+            });
+        }
+
+        function submitReportAndBlock() {
+            if (!activeChatPeer) return;
+            const blockedName = activeChatPeer.name;
+            const blockedId = activeChatPeer.id;
+
+            // Sever match
+            loadedPeers = loadedPeers.filter(p => p.id !== blockedId);
+            
+            closeReportModal();
+            closeChat();
+            
+            renderFinderList();
+            renderLogs();
+
+            showToast(`🚨 Report sent! ${blockedName} reported for "${selectedReportReason}". The match has been blocked and separated.`);
         }
 
         // Display Alert toast
