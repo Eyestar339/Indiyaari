@@ -40,7 +40,7 @@ fun ProfileSetupScreen(
     var showTermsDialog by remember { mutableStateOf(false) }
     var selectedState by remember { mutableStateOf("Maharashtra") }
     var selectedLanguage by remember { mutableStateOf("Hindi") }
-    var selectedOccupation by remember { mutableStateOf("Software Engineer") }
+    var selectedOccupation by remember { mutableStateOf("Prefer not to say (Optional)") }
     val chosenInterests = remember { mutableStateListOf<String>() }
 
     var captchaInput by remember { mutableStateOf("") }
@@ -76,9 +76,24 @@ fun ProfileSetupScreen(
         generateNewCaptcha()
     }
 
-    val stateList = listOf("Maharashtra", "Karnataka", "Delhi", "Tamil Nadu", "West Bengal", "Kerala", "Telangana", "Punjab", "Rajasthan", "Gujarat")
-    val languageList = listOf("Hindi", "English", "Bengali", "Marathi", "Telugu", "Tamil", "Gujarati", "Kannada", "Malayalam", "Punjabi")
-    val occupationList = listOf("Software Engineer", "Indian Classical Dancer", "UI/UX Designer", "Culinary Chef", "Sitar Player", "Startup Founder", "Street Art Painter", "Cricket Coach", "Medical Student", "Indie Photographer")
+    val stateList = listOf(
+        "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat",
+        "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh",
+        "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab",
+        "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh",
+        "Uttarakhand", "West Bengal", "Andaman and Nicobar Islands", "Chandigarh",
+        "Dadra and Nagar Haveli and Daman and Diu", "Delhi", "Jammu and Kashmir",
+        "Ladakh", "Lakshadweep", "Puducherry"
+    )
+    val languageList = listOf(
+        "Hindi", "English", "Bengali", "Marathi", "Telugu", "Tamil", "Gujarati", "Urdu",
+        "Kannada", "Odia", "Malayalam", "Punjabi", "Assamese", "Maithili", "Santali",
+        "Kashmiri", "Nepali", "Konkani", "Sindhi", "Dogri", "Manipuri", "Bodo", "Sanskrit"
+    )
+    val occupationList = listOf(
+        "Prefer not to say (Optional)", "Software Engineer", "Indian Classical Dancer", "UI/UX Designer", "Culinary Chef", 
+        "Sitar Player", "Startup Founder", "Street Art Painter", "Cricket Coach", "Medical Student", "Indie Photographer"
+    )
     val interestsPool = listOf("Art", "Coding", "Sitar Music", "Cricket", "Cooking", "Photography", "Bollywood", "Writing", "Dance")
 
     var stateExpanded by remember { mutableStateOf(false) }
