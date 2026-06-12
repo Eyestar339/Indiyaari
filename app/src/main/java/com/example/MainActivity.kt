@@ -77,7 +77,8 @@ class MainActivity : ComponentActivity() {
                                 onVideoModeratorToggle = { viewModel.toggleVideoModerator() },
                                 isPeerTyping = isPeerTyping,
                                 moderationWarning = moderationWarning,
-                                onDismissModeration = { viewModel.dismissModerationWarning() }
+                                onDismissModeration = { viewModel.dismissModerationWarning() },
+                                onSkip = { viewModel.skipToNextPeer() }
                             )
                         }
                         else -> {

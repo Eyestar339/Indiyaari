@@ -126,7 +126,7 @@
 
                 <!-- Interests Multi-select -->
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Interests (Select 1 or more)</label>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Interests (Optional)</label>
                     <div class="flex flex-wrap gap-2" id="interests-pool">
                         <!-- Loaded dynamically -->
                     </div>
@@ -142,6 +142,30 @@
                             <p class="text-[10px] text-gray-500 mt-1">I respect safe, verified connections & non-abusive dialogues.</p>
                         </div>
                     </label>
+                </div>
+
+                <!-- ANTI-BOT SETUP CAPTCHA -->
+                <div class="bg-darkBg/50 p-4 border border-gray-800 rounded-xl space-y-3">
+                    <div class="flex items-center justify-between">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-400">Anti-Bot Verification</label>
+                        <div id="setup-verification-badge" class="text-[9px] bg-red-500/10 border border-red-500/20 text-red-400 py-0.5 px-2 rounded-full font-bold flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                            Awaiting Solution
+                        </div>
+                    </div>
+                    
+                    <div class="relative bg-darkBg rounded-xl p-3 border border-gray-800/80 flex flex-col items-center">
+                        <canvas id="setup-captcha-canvas" width="240" height="70" class="bg-darkBg rounded-lg border border-gray-900 mx-auto pointer-events-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)]"></canvas>
+                        
+                        <button type="button" onclick="generateNewSetupCaptcha()" class="absolute right-4 top-4 p-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 transition-all border border-gray-700" title="Regenerate Challenge">
+                            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <input type="text" id="setup-captcha-input" oninput="validateSetupForm()" placeholder="Solve challenge to unlock access..." 
+                               class="w-full bg-darkBg border border-gray-700 rounded-xl px-4 py-3 text-white text-center text-sm font-bold tracking-widest focus:outline-none focus:border-primary placeholder-gray-600 transition-all">
+                    </div>
                 </div>
 
                 <!-- Register Button -->
@@ -259,12 +283,14 @@
                     </div>
                 </div>
 
-                <!-- Moderation Shield Indicator -->
-                <button onclick="toggleShield()" id="shield-moderation-toggle" title="AI Moderation Safe Shield"
-                        class="px-3 py-1.5 rounded-full flex items-center gap-1.5 border transition-all text-xs font-bold bg-teal-500/10 border-teal-500/30 text-teal-300 shadow-[0_0_10px_rgba(20,184,166,0.1)]">
-                    <i data-lucide="shield-check" class="w-4 h-4"></i>
-                    Shield On
-                </button>
+                <div class="flex items-center gap-2">
+                    <!-- Moderation Shield Indicator -->
+                    <button onclick="toggleShield()" id="shield-moderation-toggle" title="AI Moderation Safe Shield"
+                            class="px-3 py-1.5 rounded-full flex items-center gap-1.5 border transition-all text-xs font-bold bg-teal-500/10 border-teal-500/30 text-teal-300 shadow-[0_0_10px_rgba(20,184,166,0.1)]">
+                        <i data-lucide="shield-check" class="w-4 h-4"></i>
+                        Shield On
+                    </button>
+                </div>
             </div>
 
             <!-- Dialogue Scroll Board -->
@@ -283,6 +309,11 @@
                 </div>
                 
                 <form id="chat-form" onsubmit="sendMessage(event)" class="flex gap-2 items-center">
+                    <button id="chat-skip-btn" type="button" onclick="skipToNextPeer()" title="Skip to next peer connection"
+                            class="px-4 h-12 rounded-xl flex items-center gap-1.5 bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500 hover:text-white transition-all text-xs font-bold whitespace-nowrap">
+                        <i data-lucide="skip-forward" class="w-4 h-4"></i>
+                        Skip
+                    </button>
                     <input type="text" id="chat-message-input" placeholder="Type safe encrypted dialogue..." 
                            class="flex-1 bg-darkBg border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary transition-all">
                     <button type="submit" class="w-12 h-12 bg-primary rounded-xl flex items-center justify-center text-darkBg font-bold hover:bg-opacity-90 transition-all shadow-[0_0_15px_rgba(167,139,250,0.2)]">
@@ -334,6 +365,115 @@
         </div>
     </div>
 
+    <!-- ================= ANTI-BOT VERIFICATION CAPTCHA DIALOG ================= -->
+    <div id="modal-captcha" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-darkCard border border-gray-800 max-w-sm w-full rounded-2xl overflow-hidden shadow-2xl flex flex-col animate-in fade-in duration-200">
+            <!-- Modal Head -->
+            <div class="p-5 border-b border-gray-800 flex items-center gap-3 bg-darkBg/30">
+                <div class="w-10 h-10 bg-primary/20 border border-primary/30 rounded-xl flex items-center justify-center text-primary shadow-[0_0_10px_rgba(167,139,250,0.15)]">
+                    <i data-lucide="shield-check" class="w-5 h-5 text-primary"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-white text-base">Anti-Bot Verification</h3>
+                    <p class="text-[10px] text-gray-400">Verifying safe human P2P tunnel</p>
+                </div>
+            </div>
+            <!-- Modal Body -->
+            <div class="p-5 space-y-4">
+                <p class="text-xs text-gray-400 text-center leading-relaxed">
+                    To prevent spam bots from flooding temporary active peer networks, solve this math or security code challenge:
+                </p>
+
+                <!-- CAPTCHA CANVAS DISPLAY -->
+                <div class="relative bg-darkBg rounded-xl p-3 border border-gray-800/80 flex flex-col items-center">
+                    <canvas id="captcha-canvas" width="240" height="70" class="bg-darkBg rounded-lg border border-gray-900 mx-auto pointer-events-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)]"></canvas>
+                    
+                    <button onclick="generateNewCaptcha()" class="absolute right-4 top-4 p-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 transition-all border border-gray-700" title="Regenerate Challenge">
+                        <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+
+                <!-- Input -->
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 text-left">Your Verification Answer</label>
+                    <input type="text" id="captcha-input" placeholder="Type the answer here..." 
+                           class="w-full bg-darkBg border border-gray-700 rounded-xl px-4 py-3 text-white text-center text-sm font-bold tracking-widest focus:outline-none focus:border-primary placeholder-gray-600 transition-all">
+                </div>
+
+                <!-- Error feedback -->
+                <div id="captcha-error" class="hidden text-xs text-red-400 font-bold text-center animate-pulse">
+                    ❌ Incorrect challenge answer. Please try again.
+                </div>
+            </div>
+            <!-- Modal Footer -->
+            <div class="p-4 border-t border-gray-800 flex gap-3 bg-darkBg/40">
+                <button onclick="closeCaptchaModal()" class="flex-1 py-3 rounded-xl border border-gray-750 bg-transparent text-gray-300 text-xs font-bold hover:bg-gray-800 transition-all">
+                    Cancel
+                </button>
+                <button onclick="verifyCaptchaAndProceed()" id="captcha-verify-btn" class="flex-1 py-3 rounded-xl bg-primary text-darkBg text-xs font-extrabold hover:bg-opacity-95 transition-all shadow-[0_0_15px_rgba(167,139,250,0.2)]">
+                    Verify & Connect
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 1-TO-1 LIVE HANDSHAKE CONNECTION PROGRESS MODAL ================= -->
+    <div id="modal-handshake" class="hidden fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-darkCard border border-gray-800 max-w-sm w-full rounded-2xl overflow-hidden shadow-2xl flex flex-col p-6 space-y-6 relative">
+            
+            <!-- Close button (to abort) -->
+            <button onclick="abortHandshake()" class="absolute right-4 top-4 p-1.5 hover:bg-gray-800 rounded-lg text-gray-400 hover:text-white transition-all">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+
+            <!-- Pulsing Concentric Circles Radar animation -->
+            <div class="flex justify-center py-4">
+                <div class="relative w-24 h-24 flex items-center justify-center">
+                    <!-- Echo waves -->
+                    <span class="absolute inset-0 rounded-full bg-primary/20 animate-ping opacity-75"></span>
+                    <span class="absolute inset-3 rounded-full bg-primary/10 animate-pulse"></span>
+                    
+                    <div class="relative w-16 h-16 bg-primary/20 border-2 border-primary rounded-full flex items-center justify-center text-primary shadow-[0_0_20px_rgba(167,139,250,0.3)]">
+                        <i data-lucide="zap" class="w-8 h-8 animate-pulse text-primary" id="handshake-icon"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Header -->
+            <div class="text-center space-y-1.5">
+                <h3 class="font-extrabold text-white text-lg tracking-wide">1-to-1 Live Connection</h3>
+                <p class="text-xs text-primary font-bold">Securing E2E P2P Tunnel Key Exchange</p>
+                <div class="text-[10px] text-gray-500 font-mono tracking-wide">Peer ID: <span id="handshake-peer-id" class="text-gray-400">#...</span></div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="space-y-1.5">
+                <div class="flex justify-between text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+                    <span>Establishing Tunnel</span>
+                    <span id="handshake-percent" class="text-accent font-mono">0%</span>
+                </div>
+                <div class="w-full bg-darkBg h-2.5 rounded-full overflow-hidden border border-gray-800">
+                    <div id="handshake-progress" class="bg-gradient-to-r from-primary to-accent h-full w-0 transition-all duration-300 rounded-full"></div>
+                </div>
+            </div>
+
+            <!-- Interactive Terminal Console Logger -->
+            <div class="bg-darkBg rounded-xl p-3 border border-gray-800 font-mono text-[10px] space-y-1 h-32 overflow-y-auto text-gray-400 shadow-inner" id="handshake-logs">
+                <div class="text-teal-400 font-bold">&gt; Anti-bot validation cleared.</div>
+                <div class="text-gray-500">&gt; Starting secure handshake...</div>
+            </div>
+
+            <!-- Connecting Status Tip -> Simulated live signal rate -->
+            <div class="flex items-center justify-between text-[10px] text-gray-500 border-t border-gray-800 pt-3">
+                <div class="flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-green-500 inline-block"></span>
+                    <span>P2P Signal: <b class="text-gray-400">Excellent (18ms)</b></span>
+                </div>
+                <div>Standard: <b class="text-gray-400">WebRTC / DTLS</b></div>
+            </div>
+        </div>
+    </div>
+
     <!-- MAIN APP SCRIPT -->
     <script>
         // Data configurations matching Android Models
@@ -367,10 +507,12 @@
         let activeTab = 'finder'; 
         let activeChatPeer = null;
         let isShieldOn = true;
+        let currentSetupCaptchaAnswer = "";
 
         // On Page Load
         window.addEventListener('DOMContentLoaded', () => {
             initInterests();
+            generateNewSetupCaptcha();
             loadProfileFromHistory();
             lucide.createIcons();
             validateSetupForm();
@@ -421,15 +563,121 @@
         function validateSetupForm() {
             const nameInput = document.getElementById('setup-name').value.trim();
             const termsChecked = document.getElementById('setup-terms').checked;
+            const captchaInput = document.getElementById('setup-captcha-input') ? document.getElementById('setup-captcha-input').value.trim() : '';
+            const isCaptchaValid = captchaInput.toUpperCase() === currentSetupCaptchaAnswer.toUpperCase();
             const submitBtn = document.getElementById('setup-submit-btn');
 
-            if (nameInput.length >= 2 && userProfile.gender !== '' && userProfile.interests.length > 0 && termsChecked) {
+            const badge = document.getElementById('setup-verification-badge');
+            if (badge) {
+                if (isCaptchaValid) {
+                    badge.className = "text-[9px] bg-teal-500/10 border border-teal-500/20 text-teal-400 py-0.5 px-2 rounded-full font-bold flex items-center gap-1 shadow-[0_0_10px_rgba(20,184,166,0.1)]";
+                    badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-teal-400"></span> Human Verified`;
+                } else {
+                    badge.className = "text-[9px] bg-red-500/10 border border-red-500/20 text-red-400 py-0.5 px-2 rounded-full font-bold flex items-center gap-1";
+                    badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span> Awaiting Solution`;
+                }
+            }
+
+            if (nameInput.length >= 2 && userProfile.gender !== '' && termsChecked && isCaptchaValid) {
                 submitBtn.disabled = false;
                 submitBtn.className = "w-full py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 bg-primary text-darkBg shadow-[0_0_15px_rgba(167,139,250,0.25)] hover:scale-[1.01] active:scale-[0.99] cursor-pointer";
             } else {
                 submitBtn.disabled = true;
                 submitBtn.className = "w-full py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 bg-gray-700 text-gray-400 cursor-not-allowed";
             }
+        }
+
+        // Generator for the Profile Setup security CAPTCHA
+        function generateNewSetupCaptcha() {
+            const canvas = document.getElementById('setup-captcha-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            // Clear canvas to darkBg palette
+            ctx.fillStyle = '#0F0E17';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw visual security noise grid lines
+            ctx.strokeStyle = '#1F1A2E';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < canvas.width; i += 15) {
+                ctx.beginPath();
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i, canvas.height);
+                ctx.stroke();
+            }
+            for (let j = 0; j < canvas.height; j += 15) {
+                ctx.beginPath();
+                ctx.moveTo(0, j);
+                ctx.lineTo(canvas.width, j);
+                ctx.stroke();
+            }
+
+            // Draw secure bezier warping wavy lines
+            ctx.strokeStyle = 'rgba(167, 139, 250, 0.4)'; // soft primary glow
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(10, Math.random() * 40 + 15);
+            ctx.bezierCurveTo(80, Math.random() * 50, 160, Math.random() * 50, 230, Math.random() * 40 + 15);
+            ctx.stroke();
+
+            ctx.strokeStyle = 'rgba(244, 114, 182, 0.3)'; // soft accent pink
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(15, Math.random() * 40 + 15);
+            ctx.bezierCurveTo(80, Math.random() * 50, 160, Math.random() * 50, 225, Math.random() * 40 + 15);
+            ctx.stroke();
+
+            // Randomly decide challenge: Math Equation or Alphanumeric Code
+            const challengeType = Math.random() > 0.5 ? 'math' : 'code';
+            let DisplayString = "";
+            
+            if (challengeType === 'math') {
+                const term1 = Math.floor(Math.random() * 12) + 6;
+                const term2 = Math.floor(Math.random() * 9) + 2;
+                const optAdd = Math.random() > 0.4;
+                if (optAdd) {
+                    DisplayString = `${term1} + ${term2} = ?`;
+                    currentSetupCaptchaAnswer = (term1 + term2).toString();
+                } else {
+                    DisplayString = `${term1 + term2} - ${term2} = ?`;
+                    currentSetupCaptchaAnswer = term1.toString();
+                }
+            } else {
+                const symbols = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; 
+                let code = "";
+                for (let i = 0; i < 5; i++) {
+                    code += symbols.charAt(Math.floor(Math.random() * symbols.length));
+                }
+                DisplayString = code;
+                currentSetupCaptchaAnswer = code.toUpperCase();
+            }
+
+            // Render characters on Canvas using warped transforms
+            ctx.textBaseline = 'middle';
+            const sectorWidth = (canvas.width - 30) / DisplayString.length;
+            
+            for (let i = 0; i < DisplayString.length; i++) {
+                const char = DisplayString[i];
+                const fontSize = Math.floor(Math.random() * 6) + 22; // robust 22-28px font sizes
+                ctx.font = `bold ${fontSize}px sans-serif`;
+                ctx.fillStyle = i % 2 === 0 ? '#A78BFA' : '#F472B6';
+                
+                ctx.save();
+                const charX = 15 + (i * sectorWidth) + (Math.random() * 6 - 3);
+                const charY = canvas.height / 2 + (Math.random() * 8 - 4);
+                const rotation = (Math.random() * 20 - 10) * Math.PI / 180; // +/- 10 deg rota
+                
+                ctx.translate(charX, charY);
+                ctx.rotate(rotation);
+                ctx.fillText(char, 0, 0);
+                ctx.restore();
+            }
+
+            // Clear input and update verification states
+            const inputEl = document.getElementById('setup-captcha-input');
+            if (inputEl) inputEl.value = "";
+            validateSetupForm();
         }
 
         // Auto validation listners
@@ -474,10 +722,11 @@
             document.getElementById('user-display-location').innerText = `📍 ${userProfile.state}`;
             
             // Get user initials
-            const initials = userProfile.name.split(' ')
-                .filter(w => w.length > 0)
-                .take ? userProfile.name.split(' ').filter(w => w.length > 0).slice(0, 2).map(w => w[0].toUpperCase()).join('') : userProfile.name.substring(0, 2).toUpperCase();
-            document.getElementById('user-avatar-initials').innerText = initials || 'YA';
+            const nameParts = userProfile.name.split(' ').filter(w => w.length > 0);
+            const initials = nameParts.length > 1
+                ? (nameParts[0][0] + nameParts[1][0]).toUpperCase()
+                : (userProfile.name.substring(0, 2).toUpperCase() || 'YA');
+            document.getElementById('user-avatar-initials').innerText = initials;
 
             // Transition Views
             document.getElementById('view-setup').classList.add('hidden');
@@ -503,6 +752,7 @@
                 btn.classList.remove('bg-primary', 'text-darkBg', 'border-primary', 'shadow-lg');
             });
             initInterests();
+            generateNewSetupCaptcha();
 
             document.getElementById('view-dashboard').classList.add('hidden');
             document.getElementById('view-setup').classList.remove('hidden');
@@ -676,11 +926,209 @@
             });
         }
 
-        // Active P2P Chat Logic
+        // Security Gate & Live match-making logic
+        let currentCaptchaAnswer = "";
+        let pendingPeerId = null;
+        let handshakeTimer = null;
+
         function startSpecificChat(peerId) {
+            // Save peer we want to connect with
+            pendingPeerId = peerId;
             const peer = loadedPeers.find(p => p.id === peerId);
             if (!peer) return;
 
+            // Trigger CAPTCHA anti-bot validation
+            document.getElementById('modal-captcha').classList.remove('hidden');
+            generateNewCaptcha();
+        }
+
+        function closeCaptchaModal() {
+            document.getElementById('modal-captcha').classList.add('hidden');
+            pendingPeerId = null;
+        }
+
+        function generateNewCaptcha() {
+            const canvas = document.getElementById('captcha-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            
+            // Clear canvas to darkBg palette
+            ctx.fillStyle = '#0F0E17';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw visual security noise grid lines
+            ctx.strokeStyle = '#1F1A2E';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < canvas.width; i += 15) {
+                ctx.beginPath();
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i, canvas.height);
+                ctx.stroke();
+            }
+            for (let j = 0; j < canvas.height; j += 15) {
+                ctx.beginPath();
+                ctx.moveTo(0, j);
+                ctx.lineTo(canvas.width, j);
+                ctx.stroke();
+            }
+
+            // Draw secure bezier warping wavy lines
+            ctx.strokeStyle = 'rgba(167, 139, 250, 0.4)'; // soft primary glow
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(10, Math.random() * 40 + 15);
+            ctx.bezierCurveTo(80, Math.random() * 50, 160, Math.random() * 50, 230, Math.random() * 40 + 15);
+            ctx.stroke();
+
+            ctx.strokeStyle = 'rgba(244, 114, 182, 0.3)'; // soft accent pink
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(15, Math.random() * 40 + 15);
+            ctx.bezierCurveTo(80, Math.random() * 50, 160, Math.random() * 50, 225, Math.random() * 40 + 15);
+            ctx.stroke();
+
+            // Randomly decide challenge: Math Equation or Alphanumeric Code
+            const challengeType = Math.random() > 0.5 ? 'math' : 'code';
+            let DisplayString = "";
+            
+            if (challengeType === 'math') {
+                const term1 = Math.floor(Math.random() * 12) + 6;
+                const term2 = Math.floor(Math.random() * 9) + 2;
+                const optAdd = Math.random() > 0.4;
+                if (optAdd) {
+                    DisplayString = `${term1} + ${term2} = ?`;
+                    currentCaptchaAnswer = (term1 + term2).toString();
+                } else {
+                    DisplayString = `${term1 + term2} - ${term2} = ?`;
+                    currentCaptchaAnswer = term1.toString();
+                }
+            } else {
+                const symbols = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; 
+                let code = "";
+                for (let i = 0; i < 5; i++) {
+                    code += symbols.charAt(Math.floor(Math.random() * symbols.length));
+                }
+                DisplayString = code;
+                currentCaptchaAnswer = code.toUpperCase();
+            }
+
+            // Render characters on Canvas using warped transforms
+            ctx.textBaseline = 'middle';
+            const sectorWidth = (canvas.width - 30) / DisplayString.length;
+            
+            for (let i = 0; i < DisplayString.length; i++) {
+                const char = DisplayString[i];
+                const fontSize = Math.floor(Math.random() * 6) + 22; // robust 22-28px font sizes
+                ctx.font = `bold ${fontSize}px sans-serif`;
+                ctx.fillStyle = i % 2 === 0 ? '#A78BFA' : '#F472B6';
+                
+                ctx.save();
+                const charX = 15 + (i * sectorWidth) + (Math.random() * 6 - 3);
+                const charY = canvas.height / 2 + (Math.random() * 8 - 4);
+                const rotation = (Math.random() * 20 - 10) * Math.PI / 180; // +/- 10 deg rota
+                
+                ctx.translate(charX, charY);
+                ctx.rotate(rotation);
+                ctx.fillText(char, 0, 0);
+                ctx.restore();
+            }
+
+            // Clear input and remove any previous status
+            document.getElementById('captcha-input').value = "";
+            document.getElementById('captcha-error').classList.add('hidden');
+        }
+
+        function verifyCaptchaAndProceed() {
+            const val = document.getElementById('captcha-input').value.trim();
+            
+            if (val.toUpperCase() === currentCaptchaAnswer.toUpperCase()) {
+                // Success! Close CAPTCHA validation
+                document.getElementById('modal-captcha').classList.add('hidden');
+                
+                // Show dynamic handshake progress matching peer
+                const peer = loadedPeers.find(p => p.id === pendingPeerId);
+                if (peer) {
+                    document.getElementById('modal-handshake').classList.remove('hidden');
+                    runHandshakeProgress(peer);
+                }
+            } else {
+                // Shake and show error
+                document.getElementById('captcha-error').classList.remove('hidden');
+                document.getElementById('captcha-input').classList.add('border-red-500');
+                showToast("⚠️ Verification answer is incorrect. Try again.");
+                setTimeout(() => {
+                    document.getElementById('captcha-input').classList.remove('border-red-500');
+                }, 1000);
+            }
+        }
+
+        function abortHandshake() {
+            if (handshakeTimer) {
+                clearTimeout(handshakeTimer);
+                handshakeTimer = null;
+            }
+            document.getElementById('modal-handshake').classList.add('hidden');
+            pendingPeerId = null;
+            showToast("ℹ️ Connection Handshake cancelled by user.");
+        }
+
+        function runHandshakeProgress(peer) {
+            const logsContainer = document.getElementById('handshake-logs');
+            logsContainer.innerHTML = `<div class="text-teal-400 font-bold">&gt; Anti-bot validation cleared.</div>`;
+            
+            const progressBar = document.getElementById('handshake-progress');
+            const percentText = document.getElementById('handshake-percent');
+            document.getElementById('handshake-peer-id').innerText = `IY-${10000 + Math.floor(Math.random() * 90000)}`;
+            
+            progressBar.style.width = '0%';
+            percentText.innerText = '0%';
+
+            const steps = [
+                { percent: 15, delay: 500, log: `⚡ Init connection from ${userProfile.name || 'You'}... Established.`, tone: 'success' },
+                { percent: 35, delay: 600, log: `🔑 Performing local asymmetric DH peer handshake parameters...`, tone: 'normal' },
+                { percent: 60, delay: 700, log: `🛡️ Encrypting safe session keys using transient symmetric tunnels...`, tone: 'normal' },
+                { percent: 85, delay: 800, log: `📡 Registering remote tunnel with ${peer.name}'s verified client...`, tone: 'normal' },
+                { percent: 100, delay: 600, log: `👥 Connection secured safely. Launching secure peer chat-feed...`, tone: 'success' }
+            ];
+
+            let stepIndex = 0;
+
+            function processNextHandshakeStep() {
+                if (stepIndex >= steps.length) {
+                    setTimeout(() => {
+                        document.getElementById('modal-handshake').classList.add('hidden');
+                        actuallyStartChat(peer);
+                        pendingPeerId = null;
+                    }, 500);
+                    return;
+                }
+
+                const current = steps[stepIndex];
+                
+                // Append log element
+                const line = document.createElement('div');
+                if (current.tone === 'success') {
+                    line.className = "text-teal-400 font-extrabold";
+                } else {
+                    line.className = "text-gray-400";
+                }
+                line.innerHTML = `&gt; ${current.log}`;
+                logsContainer.appendChild(line);
+                logsContainer.scrollTop = logsContainer.scrollHeight;
+
+                // Adjust progress bar
+                progressBar.style.width = `${current.percent}%`;
+                percentText.innerText = `${current.percent}%`;
+
+                stepIndex++;
+                handshakeTimer = setTimeout(processNextHandshakeStep, current.delay);
+            }
+
+            handshakeTimer = setTimeout(processNextHandshakeStep, 400);
+        }
+
+        // Active P2P Chat Logic - Triggered post-handshake-completion
+        function actuallyStartChat(peer) {
             activeChatPeer = peer;
             document.getElementById('chat-peer-name').innerText = peer.name;
             document.getElementById('chat-peer-details').innerText = `${peer.occupation} • ${peer.state}`;
@@ -691,7 +1139,7 @@
 
             // Add standard encrypted welcome statement
             const welcomeMsg = document.createElement('div');
-            welcomeMsg.className = "mx-auto bg-teal-500/10 border border-teal-500/20 text-teal-300 p-2.5 rounded-xl text-[10px] text-center max-w-xs mb-3";
+            welcomeMsg.className = "mx-auto bg-teal-500/10 border border-teal-500/20 text-teal-300 p-2.5 rounded-xl text-[10px] text-center max-w-xs mb-3 shadow-[0_0_15px_rgba(20,184,166,0.05)]";
             welcomeMsg.innerHTML = `
                 <div class="font-extrabold flex items-center justify-center gap-1 mb-1">
                     <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Transient Tunnel Active
@@ -703,8 +1151,10 @@
             // Add dynamic starter message from the matched peer
             addChatMessage(peer.name, `Hey there! Compatibility score shows ${peer.compatibility}% soul match – awesome. Connect on your interest in ${peer.interests[0]}?`, false);
 
+            document.getElementById('chat-skip-btn').classList.remove('hidden');
             document.getElementById('view-chat').classList.remove('hidden');
             lucide.createIcons();
+            showToast(`🗣️ E2E Private Chat Connected with ${peer.name}`);
         }
 
         function startGroupAdda(roomName) {
@@ -730,6 +1180,7 @@
             addChatMessage("Rohan", "Kya haal sabhi ke! Welcome to this beautiful space.", false);
             addChatMessage("Neha", "Sangeet begins here. Loving the friendly people inside!", false);
 
+            document.getElementById('chat-skip-btn').classList.add('hidden');
             document.getElementById('view-chat').classList.remove('hidden');
             lucide.createIcons();
         }
@@ -737,6 +1188,27 @@
         function closeChat() {
             document.getElementById('view-chat').classList.add('hidden');
             activeChatPeer = null;
+        }
+
+        function skipToNextPeer() {
+            if (!activeChatPeer) return;
+            // Filter peers that are NOT the current peer
+            const available = loadedPeers.filter(p => String(p.id) !== String(activeChatPeer.id));
+            if (available.length === 0) {
+                showToast("ℹ️ No more peers online to skip to right now!");
+                return;
+            }
+            // Pick a random peer
+            const nextPeer = available[Math.floor(Math.random() * available.length)];
+            
+            // Hide active chat view first to transition
+            document.getElementById('view-chat').classList.add('hidden');
+            
+            // Open the Handshake screen directly (skipping CAPTCHA since they already completed it once!)
+            pendingPeerId = nextPeer.id;
+            document.getElementById('modal-handshake').classList.remove('hidden');
+            runHandshakeProgress(nextPeer);
+            showToast(`⏭️ Skipping... Finding next Yaari Connection!`);
         }
 
         function toggleShield() {

@@ -15,6 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -36,6 +42,39 @@ fun ProfileSetupScreen(
     var selectedLanguage by remember { mutableStateOf("Hindi") }
     var selectedOccupation by remember { mutableStateOf("Software Engineer") }
     val chosenInterests = remember { mutableStateListOf<String>() }
+
+    var captchaInput by remember { mutableStateOf("") }
+    var captchaText by remember { mutableStateOf("") }
+    var captchaAnswer by remember { mutableStateOf("") }
+    val isCaptchaCorrect = captchaInput.trim().equals(captchaAnswer, ignoreCase = true)
+
+    val randomGenerator = remember { java.util.Random() }
+
+    fun generateNewCaptcha() {
+        val challengeType = if (randomGenerator.nextBoolean()) "math" else "code"
+        if (challengeType == "math") {
+            val term1 = (6..17).random()
+            val term2 = (2..9).random()
+            val isAdd = randomGenerator.nextBoolean()
+            if (isAdd) {
+                captchaText = "$term1 + $term2 = ?"
+                captchaAnswer = (term1 + term2).toString()
+            } else {
+                captchaText = "${term1 + term2} - $term2 = ?"
+                captchaAnswer = term1.toString()
+            }
+        } else {
+            val symbols = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+            val code = (1..5).map { symbols[randomGenerator.nextInt(symbols.length)] }.joinToString("")
+            captchaText = code
+            captchaAnswer = code
+        }
+        captchaInput = ""
+    }
+
+    LaunchedEffect(Unit) {
+        generateNewCaptcha()
+    }
 
     val stateList = listOf("Maharashtra", "Karnataka", "Delhi", "Tamil Nadu", "West Bengal", "Kerala", "Telangana", "Punjab", "Rajasthan", "Gujarat")
     val languageList = listOf("Hindi", "English", "Bengali", "Marathi", "Telugu", "Tamil", "Gujarati", "Kannada", "Malayalam", "Punjabi")
@@ -276,7 +315,7 @@ fun ProfileSetupScreen(
 
                     // Interests Multi-Select
                     Text(
-                        text = "Your Passion Areas (Choose 2+):",
+                        text = "Your Passion Areas (Optional):",
                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
                         color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.padding(top = 8.dp)
@@ -378,9 +417,195 @@ fun ProfileSetupScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // CAPTCHA Card
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Anti-Bot Verification",
+                            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        
+                        AssistChip(
+                            onClick = {},
+                            label = { 
+                                Text(
+                                    text = if (isCaptchaCorrect) "Human Verified" else "Awaiting Solution",
+                                    fontSize = 10.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            },
+                            colors = AssistChipDefaults.assistChipColors(
+                                containerColor = if (isCaptchaCorrect) Color(0xFF14B8A6).copy(alpha = 0.1f) else Color(0xFFEF4444).copy(alpha = 0.1f),
+                                labelColor = if (isCaptchaCorrect) Color(0xFF14B8A6) else Color(0xFFEF4444)
+                            ),
+                            border = BorderStroke(
+                                width = 1.dp,
+                                color = if (isCaptchaCorrect) Color(0xFF14B8A6).copy(alpha = 0.2f) else Color(0xFFEF4444).copy(alpha = 0.2f)
+                            ),
+                            modifier = Modifier.height(24.dp)
+                        )
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(80.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(Color(0xFF0F0E17))
+                            .padding(4.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        key(captchaText) {
+                            androidx.compose.foundation.Canvas(
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                val canvasWidth = size.width
+                                val canvasHeight = size.height
+
+                                // Draw security noise lines
+                                for (i in 0..canvasWidth.toInt() step 45) {
+                                    drawLine(
+                                        color = Color(0xFF1F1A2E),
+                                        start = Offset(i.toFloat(), 0f),
+                                        end = Offset(i.toFloat(), canvasHeight),
+                                        strokeWidth = 1f
+                                    )
+                                }
+                                for (j in 0..canvasHeight.toInt() step 25) {
+                                    drawLine(
+                                        color = Color(0xFF1F1A2E),
+                                        start = Offset(0f, j.toFloat()),
+                                        end = Offset(canvasWidth, j.toFloat()),
+                                        strokeWidth = 1f
+                                    )
+                                }
+
+                                // Bezier wavy curves for anti-OCR protection
+                                val random = java.util.Random(captchaText.hashCode().toLong())
+                                val wavePath1 = androidx.compose.ui.graphics.Path().apply {
+                                    moveTo(10f, canvasHeight * (0.3f + random.nextFloat() * 0.4f))
+                                    cubicTo(
+                                        canvasWidth * 0.33f, canvasHeight * random.nextFloat(),
+                                        canvasWidth * 0.66f, canvasHeight * random.nextFloat(),
+                                        canvasWidth - 10f, canvasHeight * (0.3f + random.nextFloat() * 0.4f)
+                                    )
+                                }
+                                drawPath(
+                                    path = wavePath1,
+                                    color = Color(0xFFA78BFA).copy(alpha = 0.4f),
+                                    style = Stroke(width = 4f)
+                                )
+
+                                val wavePath2 = androidx.compose.ui.graphics.Path().apply {
+                                    moveTo(15f, canvasHeight * (0.2f + random.nextFloat() * 0.5f))
+                                    cubicTo(
+                                        canvasWidth * 0.25f, canvasHeight * random.nextFloat(),
+                                        canvasWidth * 0.75f, canvasHeight * random.nextFloat(),
+                                        canvasWidth - 15f, canvasHeight * (0.2f + random.nextFloat() * 0.5f)
+                                    )
+                                }
+                                drawPath(
+                                    path = wavePath2,
+                                    color = Color(0xFFF472B6).copy(alpha = 0.3f),
+                                    style = Stroke(width = 3f)
+                                )
+
+                                // Draw skewed characters
+                                val textLength = captchaText.length
+                                if (textLength > 0) {
+                                    val sectorWidth = (canvasWidth - 40f) / textLength
+                                    drawIntoCanvas { composeCanvas ->
+                                        for (i in 0 until textLength) {
+                                            val char = captchaText[i].toString()
+                                            val charRandom = java.util.Random((captchaText.hashCode() + i).toLong())
+                                            
+                                            val charX = 20f + (i * sectorWidth) + (charRandom.nextFloat() * 10f - 5f)
+                                            val charY = (canvasHeight / 2f) + (charRandom.nextFloat() * 16f - 8f)
+                                            val angle = (charRandom.nextFloat() * 30f - 15f)
+
+                                            val isPurple = i % 2 == 0
+                                            val colorHex = if (isPurple) "#A78BFA" else "#F472B6"
+
+                                            val textPaint = android.graphics.Paint().apply {
+                                                color = android.graphics.Color.parseColor(colorHex)
+                                                textSize = (55 + charRandom.nextInt(15)).toFloat()
+                                                typeface = android.graphics.Typeface.DEFAULT_BOLD
+                                                textAlign = android.graphics.Paint.Align.CENTER
+                                                isAntiAlias = true
+                                            }
+
+                                            composeCanvas.nativeCanvas.save()
+                                            composeCanvas.nativeCanvas.rotate(angle, charX, charY)
+                                            composeCanvas.nativeCanvas.drawText(char, charX, charY + 18f, textPaint)
+                                            composeCanvas.nativeCanvas.restore()
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        // Regenerant click button
+                        IconButton(
+                            onClick = { generateNewCaptcha() },
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .padding(4.dp)
+                                .size(36.dp)
+                                .background(Color(0xFF1F1A2E), shape = RoundedCornerShape(8.dp))
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Refresh,
+                                contentDescription = "Regenerate Captcha",
+                                tint = Color.White,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+                    }
+
+                    OutlinedTextField(
+                        value = captchaInput,
+                        onValueChange = { captchaInput = it },
+                        label = { Text("Solve Verification Answer") },
+                        placeholder = { Text("Type sum or letters code") },
+                        leadingIcon = { Icon(Icons.Default.Shield, contentDescription = null) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("captcha_input"),
+                        singleLine = true,
+                        textStyle = TextStyle.Default.copy(
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center,
+                            letterSpacing = 2.sp,
+                            color = MaterialTheme.colorScheme.onSurface
+                        ),
+                        colors = OutlinedTextFieldDefaults.colors()
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             Button(
                 onClick = {
-                    if (name.isNotBlank() && chosenInterests.isNotEmpty() && termsAccepted) {
+                    if (name.isNotBlank() && termsAccepted && isCaptchaCorrect) {
                         onProfileSaved(
                             UserProfile(
                                 name = name,
@@ -393,7 +618,7 @@ fun ProfileSetupScreen(
                         )
                     }
                 },
-                enabled = name.isNotBlank() && chosenInterests.isNotEmpty() && termsAccepted,
+                enabled = name.isNotBlank() && termsAccepted && isCaptchaCorrect,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)

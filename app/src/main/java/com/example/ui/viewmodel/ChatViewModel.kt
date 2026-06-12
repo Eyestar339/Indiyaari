@@ -99,6 +99,12 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
     private val _isApiKeyMissing = MutableStateFlow(!GeminiService.hasValidApiKey())
     val isApiKeyMissing: StateFlow<Boolean> = _isApiKeyMissing.asStateFlow()
 
+    // Last used matchmaking parameters for Omegle-style Skip/Next
+    private var lastPreferState: String = "Any State"
+    private var lastPreferLanguage: String = "Any Language"
+    private var lastPreferInterest: String = "Any Interest"
+    private var lastPreferOccupation: String = "Any Occupation"
+
     // Save profile logic
     fun saveProfile(profile: UserProfile) {
         viewModelScope.launch {
@@ -162,6 +168,11 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
         preferInterest: String?,
         preferOccupation: String?
     ) {
+        lastPreferState = preferState ?: "Any State"
+        lastPreferLanguage = preferLanguage ?: "Any Language"
+        lastPreferInterest = preferInterest ?: "Any Interest"
+        lastPreferOccupation = preferOccupation ?: "Any Occupation"
+
         viewModelScope.launch {
             _isMatching.value = true
             _currentChatPeer.value = null
@@ -315,6 +326,25 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
         _isSecureMode.value = false
         _handshakeData.value = null
         _isVideoCallEnabled.value = false
+    }
+
+    /**
+     * Skip to next peer directly and trigger matchmaking (Omegle style)
+     */
+    fun skipToNextPeer() {
+        viewModelScope.launch {
+            _currentChatPeer.value = null
+            _isSecureMode.value = false
+            _handshakeData.value = null
+            _isVideoCallEnabled.value = false
+            
+            startMatchmaking(
+                preferState = lastPreferState,
+                preferLanguage = lastPreferLanguage,
+                preferInterest = lastPreferInterest,
+                preferOccupation = lastPreferOccupation
+            )
+        }
     }
 
     /**

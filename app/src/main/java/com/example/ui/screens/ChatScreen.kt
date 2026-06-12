@@ -57,7 +57,8 @@ fun ChatScreen(
     // Peer Typing state & moderations
     isPeerTyping: Boolean,
     moderationWarning: String?,
-    onDismissModeration: () -> Unit
+    onDismissModeration: () -> Unit,
+    onSkip: () -> Unit = {}
 ) {
     val titleName = currentPeer?.name ?: currentRoom?.name ?: "Adda Chat"
     val isRoom = currentRoom != null
@@ -282,6 +283,30 @@ fun ChatScreen(
                         .padding(12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    if (!isRoom) {
+                        Button(
+                            onClick = onSkip,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.errorContainer,
+                                contentColor = MaterialTheme.colorScheme.onErrorContainer
+                            ),
+                            shape = RoundedCornerShape(24.dp),
+                            contentPadding = PaddingValues(horizontal = 14.dp),
+                            modifier = Modifier
+                                .height(50.dp)
+                                .testTag("skip_peer_button")
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.SkipNext,
+                                contentDescription = "Skip Peer",
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text("Skip", fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                    }
+
                     OutlinedTextField(
                         value = inputText,
                         onValueChange = onInputChange,
