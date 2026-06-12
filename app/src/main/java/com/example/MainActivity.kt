@@ -101,7 +101,8 @@ class MainActivity : ComponentActivity() {
                                 onDeleteChat = { peerId ->
                                     viewModel.deleteChatHistory(peerId)
                                 },
-                                onLogout = { viewModel.logoutProfile() }
+                                onLogout = { viewModel.logoutProfile() },
+                                onSaveProfile = { viewModel.saveProfile(it) }
                             )
                         }
                     }

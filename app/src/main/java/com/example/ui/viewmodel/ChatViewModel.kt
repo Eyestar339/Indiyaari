@@ -116,6 +116,7 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
                 putString("occupation", profile.occupation)
                 putString("interests", profile.interests.joinToString(","))
                 putString("gender", profile.gender)
+                putString("avatar_seed", profile.avatarSeed)
                 putBoolean("profile_completed", true)
                 apply()
             }
@@ -482,6 +483,7 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
         val interestsStr = sharedPrefs.getString("interests", "") ?: ""
         val interests = if (interestsStr.isNotEmpty()) interestsStr.split(",") else emptyList()
         val gender = sharedPrefs.getString("gender", "") ?: ""
-        return UserProfile(name, state, language, occupation, interests, gender)
+        val avatarSeed = sharedPrefs.getString("avatar_seed", "avatar_1") ?: "avatar_1"
+        return UserProfile(name, state, language, occupation, interests, gender, avatarSeed)
     }
 }

@@ -9,7 +9,8 @@ data class UserProfile(
     val language: String = "",
     val occupation: String = "",
     val interests: List<String> = emptyList(),
-    val gender: String = ""
+    val gender: String = "",
+    val avatarSeed: String = "avatar_1"
 )
 
 @Entity(tableName = "peers")

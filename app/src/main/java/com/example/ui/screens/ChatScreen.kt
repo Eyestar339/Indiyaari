@@ -6,6 +6,8 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -66,6 +68,12 @@ fun ChatScreen(
 
     // Cryptography Inspector Dialog State
     var selectedEncryptedMessage by remember { mutableStateOf<Message?>(null) }
+    
+    // Disappearing Messages & Report Dialog states
+    var isDisappearingMode by remember { mutableStateOf(false) }
+    var showReportDialog by remember { mutableStateOf(false) }
+    var reportReasonSelected by remember { mutableStateOf("Abusive Language / Bullying") }
+    var reportSubmittedState by remember { mutableStateOf(false) }
 
     // Auto Scroll to Bottom on message updates
     LaunchedEffect(messages.size, isPeerTyping) {
@@ -139,6 +147,30 @@ fun ChatScreen(
                                 imageVector = Icons.Default.Videocam,
                                 contentDescription = "Video Call",
                                 tint = if (isVideoCallEnabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+
+                        // WhatsApp Disappearing Messages Toggle
+                        IconButton(
+                            onClick = { isDisappearingMode = !isDisappearingMode },
+                            modifier = Modifier.testTag("disappearing_messages_toggle")
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Timer,
+                                contentDescription = "Disappearing Messages",
+                                tint = if (isDisappearingMode) Color(0xFFFBBF24) else MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+
+                        // Report User Action
+                        IconButton(
+                            onClick = { showReportDialog = true },
+                            modifier = Modifier.testTag("report_user_icon_button")
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Flag,
+                                contentDescription = "Report User",
+                                tint = MaterialTheme.colorScheme.error
                             )
                         }
                     }
@@ -276,13 +308,82 @@ fun ChatScreen(
                 modifier = Modifier.fillMaxWidth(),
                 color = MaterialTheme.colorScheme.surface
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .navigationBarsPadding()
-                        .padding(12.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    // Quick Emoji and Desi Sticker Tray
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.25f))
+                            .padding(vertical = 6.dp, horizontal = 12.dp)
+                            .horizontalScroll(androidx.compose.foundation.rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "🇮🇳 Emojis:",
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                        
+                        val quickEmojis = listOf("😊", "😂", "🔥", "👍", "🙏", "🎉", "❤️", "🇮🇳", "☕", "🍛")
+                        quickEmojis.forEach { emoji ->
+                            Box(
+                                modifier = Modifier
+                                    .clip(CircleShape)
+                                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.6f))
+                                    .clickable { onInputChange(inputText + emoji) }
+                                    .padding(horizontal = 8.dp, vertical = 4.dp)
+                            ) {
+                                Text(text = emoji, fontSize = 13.sp)
+                            }
+                        }
+
+                        Box(
+                            modifier = Modifier
+                                .width(1.dp)
+                                .height(16.dp)
+                                .background(MaterialTheme.colorScheme.outlineVariant)
+                        )
+
+                        Text(
+                            text = "Stickers:",
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+
+                        val quickStickers = listOf(
+                            Pair("☕ Chai Adda", "☕"),
+                            Pair("🏏 Gully Cricket", "🏏"),
+                            Pair("🍲 Biryani Love", "🍲"),
+                            Pair("🦚 Peacock Pride", "🦚")
+                        )
+                        quickStickers.forEach { (label, emojiStr) ->
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.15f))
+                                    .clickable {
+                                        onInputChange("[Sticker $emojiStr: $label]")
+                                    }
+                                    .padding(horizontal = 8.dp, vertical = 4.dp)
+                            ) {
+                                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                                    Text(text = emojiStr, fontSize = 12.sp)
+                                    Text(text = label.split(" ").last(), fontSize = 10.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.secondary)
+                                }
+                            }
+                        }
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .navigationBarsPadding()
+                            .padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                     if (!isRoom) {
                         Button(
                             onClick = onSkip,
@@ -350,8 +451,10 @@ fun ChatScreen(
                         )
                     }
                 }
-            }
-        }
+            } // Close inputs Column
+        } // Close inputs Surface
+    } // Close Scaffold Column wrapper
+    } // Close Scaffold trailing lambda
 
         // Ciphertext explorer decryption Dialog
         if (selectedEncryptedMessage != null) {
@@ -454,8 +557,102 @@ fun ChatScreen(
                 }
             )
         }
+
+        // Report User Dialog
+        if (showReportDialog) {
+            AlertDialog(
+                onDismissRequest = { showReportDialog = false },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            showReportDialog = false
+                            reportSubmittedState = true
+                        },
+                        colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)
+                    ) {
+                        Text("Submit Report", fontWeight = FontWeight.Bold)
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showReportDialog = false }) {
+                        Text("Cancel")
+                    }
+                },
+                title = {
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Icon(imageVector = Icons.Default.Flag, contentDescription = null, tint = MaterialTheme.colorScheme.error)
+                        Text("Report this User?")
+                    }
+                },
+                text = {
+                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        Text(
+                            text = "To maintain the highest cyber-safety standards for Indiyaari, select a reason below. Reporting will immediately separate your connection.",
+                            fontSize = 13.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        
+                        val reasons = listOf(
+                            "Abusive Language / Bullying",
+                            "Commercial Spam / Advertisements",
+                            "Inappropriate behavior or profile",
+                            "Fake / Impersonating profile"
+                        )
+                        
+                        reasons.forEach { reason ->
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { reportReasonSelected = reason }
+                                    .padding(vertical = 4.dp),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                RadioButton(
+                                    selected = reportReasonSelected == reason,
+                                    onClick = { reportReasonSelected = reason }
+                                )
+                                Text(text = reason, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurface)
+                            }
+                        }
+                    }
+                }
+            )
+        }
+
+        // Report Submitted Info Banner
+        if (reportSubmittedState) {
+            AlertDialog(
+                onDismissRequest = { 
+                    reportSubmittedState = false
+                    onSkip()
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = { 
+                            reportSubmittedState = false
+                            onSkip()
+                        }
+                    ) {
+                        Text("Okay, Proceed")
+                    }
+                },
+                title = {
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Icon(imageVector = Icons.Default.Shield, contentDescription = null, tint = Color(0xFF34D399))
+                        Text("User Reported Successfully")
+                    }
+                },
+                text = {
+                    Text(
+                        text = "Thank you! Our moderators and Gemini API filters have logged your report under \"$reportReasonSelected\". Your current chat partner is now blocked and the match is separated.",
+                        fontSize = 13.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            )
+        }
     }
-}
 
 // ---------------------- SUB COMPONENTS ----------------------
 
@@ -523,12 +720,32 @@ fun ChatBubble(
                                 .padding(end = 4.dp)
                         )
                     }
-                    Text(
-                        text = message.text,
-                        fontSize = 14.sp,
-                        color = textColor,
-                        fontWeight = if (message.isEncrypted) FontWeight.Medium else FontWeight.Normal
-                    )
+                Text(
+                    text = message.text,
+                    fontSize = 14.sp,
+                    color = textColor,
+                    fontWeight = if (message.isEncrypted) FontWeight.Medium else FontWeight.Normal
+                )
+                }
+
+                if (isMe) {
+                    Row(
+                        modifier = Modifier.align(Alignment.End).padding(top = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(3.dp)
+                    ) {
+                        Text(
+                            text = "🔒 E2E",
+                            fontSize = 8.sp,
+                            color = textColor.copy(alpha = 0.62f)
+                        )
+                        Icon(
+                            imageVector = Icons.Default.DoneAll,
+                            contentDescription = "Delivered & Read",
+                            tint = Color(0xFF34D399),
+                            modifier = Modifier.size(12.dp)
+                        )
+                    }
                 }
 
                 if (message.isEncrypted) {

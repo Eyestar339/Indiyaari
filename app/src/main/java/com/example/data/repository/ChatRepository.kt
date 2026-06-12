@@ -35,6 +35,7 @@ class ChatRepository(
 
     // Static list of premium rooms
     val interestRooms = listOf(
+        // Technology & Arts
         InterestRoom(
             id = "room_tech",
             name = "Tech Yaars",
@@ -59,21 +60,96 @@ class ChatRepository(
             category = "Music",
             activeCount = 67
         ),
+        // State Addas
         InterestRoom(
-            id = "room_food",
-            name = "Masala Adda",
-            iconName = "Restaurant",
-            description = "Exploring street food recipes, regional spices, biryani cults, and fine dining.",
-            category = "Culture",
-            activeCount = 35
+            id = "room_state_mh",
+            name = "Apna Maharashtra Adda",
+            iconName = "LocationOn",
+            description = "Mumbai locals, Pune IT parks, and authentic Misal/Pav-Bhaji discussions.",
+            category = "State Adda",
+            activeCount = 152
         ),
         InterestRoom(
-            id = "room_cinema",
-            name = "Cinephiles Hub",
-            iconName = "Movie",
-            description = "Discussing Bollywood classics, regional masterpieces, and Malayalam scripts.",
-            category = "Cinema",
-            activeCount = 51
+            id = "room_state_kar",
+            name = "Namma Karnataka Adda",
+            iconName = "LocationOn",
+            description = "Bengaluru start-up hubs, Mysore heritage, and Kannada cultural talk.",
+            category = "State Adda",
+            activeCount = 98
+        ),
+        InterestRoom(
+            id = "room_state_pb",
+            name = "Shaan-e-Punjab",
+            iconName = "LocationOn",
+            description = "Amritsari kulche, Bhangra high-energy music, and agricultural talk.",
+            category = "State Adda",
+            activeCount = 114
+        ),
+        InterestRoom(
+            id = "room_state_dl",
+            name = "Dilwalon ki Delhi",
+            iconName = "LocationOn",
+            description = "Delhi NCR campus gossips, street shopping, and North Indian food.",
+            category = "State Adda",
+            activeCount = 137
+        ),
+        // Mother Tongue Addas
+        InterestRoom(
+            id = "room_lang_hi",
+            name = "Hindi Sangoshthi",
+            iconName = "Forum",
+            description = "Shayari, standard Hindi poetry, popular literature, and general chit-chat.",
+            category = "Language Adda",
+            activeCount = 240
+        ),
+        InterestRoom(
+            id = "room_lang_bn",
+            name = "Bengali Baithak",
+            iconName = "Forum",
+            description = "Rabindra-Sangeet, intellectual literature talks, and traditional sweet discussions.",
+            category = "Language Adda",
+            activeCount = 129
+        ),
+        InterestRoom(
+            id = "room_lang_ta",
+            name = "Tamil Mandram",
+            iconName = "Forum",
+            description = "Exploring rich Tamil history, Sangam literature, and AR Rahman music tracks.",
+            category = "Language Adda",
+            activeCount = 183
+        ),
+        InterestRoom(
+            id = "room_lang_te",
+            name = "Telugu Toranam",
+            iconName = "Forum",
+            description = "Telugu cinema, Tollywood gossip, food traditions, and regional updates.",
+            category = "Language Adda",
+            activeCount = 145
+        ),
+        // Student / Campus Corners
+        InterestRoom(
+            id = "room_student_hack",
+            name = "Campus Code Club",
+            iconName = "School",
+            description = "College student developers discussing open-source, DSA, and tech internship prep.",
+            category = "Student Corner",
+            activeCount = 215
+        ),
+        InterestRoom(
+            id = "room_student_study",
+            name = "UPSC & Exam Aspirants",
+            iconName = "School",
+            description = "Combined study sessions, current affairs cheat-sheets, and motivation logs.",
+            category = "Student Corner",
+            activeCount = 320
+        ),
+        InterestRoom(
+            id = "room_student_gully",
+            name = "Gully Esports Gaming",
+            iconName = "School",
+            description = "Student corner to organize PUBG/BGMI custom rooms, Valorant stacks, and Esports talks.",
+            category = "Student Corner",
+            activeCount = 192
         )
     )
 

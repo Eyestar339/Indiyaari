@@ -1,9 +1,11 @@
 package com.example.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -36,12 +38,24 @@ fun ProfileSetupScreen(
 ) {
     var name by remember { mutableStateOf("") }
     var selectedGender by remember { mutableStateOf("Male") }
+    var selectedAvatar by remember { mutableStateOf("avatar_tea") }
     var termsAccepted by remember { mutableStateOf(false) }
     var showTermsDialog by remember { mutableStateOf(false) }
     var selectedState by remember { mutableStateOf("Maharashtra") }
     var selectedLanguage by remember { mutableStateOf("Hindi") }
     var selectedOccupation by remember { mutableStateOf("Prefer not to say (Optional)") }
     val chosenInterests = remember { mutableStateListOf<String>() }
+
+    val avatarChoices = listOf(
+        Pair("avatar_tea", "☕"),
+        Pair("avatar_tiger", "🐅"),
+        Pair("avatar_biryani", "🍲"),
+        Pair("avatar_bat", "🏏"),
+        Pair("avatar_dance", "💃"),
+        Pair("avatar_sitar", "🎸"),
+        Pair("avatar_star", "🎬"),
+        Pair("avatar_peacock", "🦚")
+    )
 
     var captchaInput by remember { mutableStateOf("") }
     var captchaText by remember { mutableStateOf("") }
@@ -91,8 +105,9 @@ fun ProfileSetupScreen(
         "Kashmiri", "Nepali", "Konkani", "Sindhi", "Dogri", "Manipuri", "Bodo", "Sanskrit"
     )
     val occupationList = listOf(
-        "Prefer not to say (Optional)", "Software Engineer", "Indian Classical Dancer", "UI/UX Designer", "Culinary Chef", 
-        "Sitar Player", "Startup Founder", "Street Art Painter", "Cricket Coach", "Medical Student", "Indie Photographer"
+        "Prefer not to say (Optional)", "Student / Campus Scholar", "Unemployed / Gap Year", "Software Engineer", "Teacher / Educator", 
+        "Farmer / Agriculturist", "Shopkeeper / Merchant", "Government Employee", "Indian Classical Dancer", "UI/UX Designer", 
+        "Culinary Chef", "Sitar Player", "Startup Founder", "Street Art Painter", "Cricket Coach", "Medical Student", "Indie Photographer"
     )
     val interestsPool = listOf("Art", "Coding", "Sitar Music", "Cricket", "Cooking", "Photography", "Bollywood", "Writing", "Dance")
 
@@ -228,6 +243,44 @@ fun ProfileSetupScreen(
                                         color = textColor
                                     )
                                 }
+                            }
+                        }
+                    }
+
+                    // Avatar Selection
+                    Text(
+                        text = "Choose Desi Avatar Badge:",
+                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        avatarChoices.forEach { (avatarSeedVal, unicodeEmoji) ->
+                            val isSelected = selectedAvatar == avatarSeedVal
+                            Box(
+                                modifier = Modifier
+                                    .size(44.dp)
+                                    .clip(CircleShape)
+                                    .background(
+                                        if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.25f)
+                                        else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
+                                    )
+                                    .border(
+                                        width = if (isSelected) 2.dp else 1.dp,
+                                        color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Gray.copy(alpha = 0.3f),
+                                        shape = CircleShape
+                                    )
+                                    .clickable { selectedAvatar = avatarSeedVal }
+                                    .padding(4.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(text = unicodeEmoji, fontSize = 22.sp)
                             }
                         }
                     }
@@ -628,7 +681,8 @@ fun ProfileSetupScreen(
                                 language = selectedLanguage,
                                 occupation = selectedOccupation,
                                 interests = chosenInterests.toList(),
-                                gender = selectedGender
+                                gender = selectedGender,
+                                avatarSeed = selectedAvatar
                             )
                         )
                     }
