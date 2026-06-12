@@ -10,7 +10,8 @@ data class UserProfile(
     val occupation: String = "",
     val interests: List<String> = emptyList(),
     val gender: String = "",
-    val avatarSeed: String = "avatar_1"
+    val avatarSeed: String = "avatar_1",
+    val quizPoints: Int = 0
 )
 
 @Entity(tableName = "peers")

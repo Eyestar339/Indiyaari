@@ -13,6 +13,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.ui.layout.ContentScale
+import coil.compose.AsyncImage
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -285,7 +287,7 @@ fun DashboardScreen(
                             onStartMatching(preferState, preferLang, preferInterest, preferOcc)
                         }
                     )
-                    1 -> QuizTabContent(userProfile = userProfile)
+                    1 -> QuizTabContent(userProfile = userProfile, onSaveProfile = onSaveProfile)
                     2 -> RoomsTabContent(
                         rooms = interestRooms,
                         onJoinRoom = onJoinRoom
@@ -968,100 +970,145 @@ data class TriviaQuestion(
     val explanation: String
 )
 
-val IndianTriviaPool = listOf(
-    TriviaQuestion(
-        id = 1,
-        question = "Which Indian space mission made India the first country to land near the lunar south pole?",
-        options = listOf("Chandrayaan-2", "Mangalyaan", "Chandrayaan-3", "Gaganyaan"),
-        correctIdx = 2,
-        explanation = "Chandrayaan-3 landed successfully near the South Pole on August 23, 2023!"
-    ),
-    TriviaQuestion(
-        id = 2,
-        question = "Which Indian city is known as the 'Silicon Valley of India'?",
-        options = listOf("Hyderabad", "Bengaluru", "Mumbai", "Pune"),
-        correctIdx = 1,
-        explanation = "Bengaluru is named Silicon Valley due to its leading role as the nation's information technology exporter!"
-    ),
-    TriviaQuestion(
-        id = 3,
-        question = "Which spice is known as the 'Queen of Spices' in India?",
-        options = listOf("Black Pepper", "Cardamom", "Turmeric", "Cinnamon"),
-        correctIdx = 1,
-        explanation = "Cardamom (Elaichi) is widely hailed as the Queen of Spices for its rich aroma and culinary values."
-    ),
-    TriviaQuestion(
-        id = 4,
-        question = "Who directed the Oscar-winning song 'Naatu Naatu' movie 'RRR'?",
-        options = listOf("S. S. Rajamouli", "Sanjay Leela Bhansali", "Mani Ratnam", "Prashanth Neel"),
-        correctIdx = 0,
-        explanation = "S. S. Rajamouli directed RRR, featuring the global hit track 'Naatu Naatu'!"
-    ),
-    TriviaQuestion(
-        id = 5,
-        question = "In which Indian state can you find the famous Tea Hills of Munnar?",
-        options = listOf("Tamil Nadu", "Assam", "Kerala", "Karnataka"),
-        correctIdx = 2,
-        explanation = "Munnar tea gardens are situated in the Western Ghats mountain range of Kerala."
-    ),
-    TriviaQuestion(
-        id = 6,
-        question = "Which legendary Indian cricketer is affectionately known as the 'God of Cricket'?",
-        options = listOf("M.S. Dhoni", "Sachin Tendulkar", "Virat Kohli", "Kapil Dev"),
-        correctIdx = 1,
-        explanation = "Sachin Tendulkar is celebrated across the world as the God of Cricket."
-    )
+val sportsTrivia = listOf(
+    TriviaQuestion(1, "How many Cricket World Cups (50-overs) has India won in total?", listOf("None", "One", "Two", "Three"), 2, "India won the 50-over World Cup in 1983 and 2011."),
+    TriviaQuestion(2, "Who is the first Indian track and field athlete to win an Olympic gold medal?", listOf("Milkha Singh", "Neeraj Chopra", "Abhinav Bindra", "P.V. Sindhu"), 1, "Neeraj Chopra won Gold in Men's Javelin Throw at the 2020 Tokyo Olympics."),
+    TriviaQuestion(3, "Which Indian chess prodigy won Candidates 2024 to challenge for World Championship?", listOf("Dommaraju Gukesh", "Praggnanandhaa R", "Vidit Gujrathi", "Viswanathan Anand"), 0, "Gukesh D won the Candidates Tournament 2024 at just 17 years old to challenge for the crown."),
+    TriviaQuestion(4, "Which sport originated in ancient India as 'Chaturanga'?", listOf("Kabaddi", "Chess", "Polo", "Badminton"), 1, "Chess tracing its roots back to Gupta Empire-era India as Chaturanga."),
+    TriviaQuestion(5, "Who is affectionately known as the 'God of Cricket'?", listOf("Virat Kohli", "Sachin Tendulkar", "M.S. Dhoni", "Kapil Dev"), 1, "Sachin Tendulkar is celebrated across India and the globe as the God of Cricket."),
+    TriviaQuestion(6, "Who was the captain when India won its first ever T20 World Cup in 2007?", listOf("Sourav Ganguly", "Yuvraj Singh", "M.S. Dhoni", "Rahul Dravid"), 2, "M.S. Dhoni led a young Indian squad to make history in South Africa in 2007.")
+)
+
+val bollywoodTrivia = listOf(
+    TriviaQuestion(7, "Which iconic movie boasts the legendary dialogue 'Mogambo Khush Hua'?", listOf("Sholay", "Mr. India", "Don", "Deewaar"), 1, "The legendary villain Mogambo was played by Amrish Puri in the movie Mr. India."),
+    TriviaQuestion(8, "Who is widely referred to as the 'Shahenshah of Bollywood'?", listOf("Shah Rukh Khan", "Amitabh Bachchan", "Salman Khan", "Aamir Khan"), 1, "Amitabh Bachchan is called the Shahenshah of Indian Cinema."),
+    TriviaQuestion(9, "Which Hindi film is the longest-running in Indian cinema history?", listOf("Lagaan", "Sholay", "Dilwale Dulhania Le Jayenge", "3 Idiots"), 2, "DDLJ has been screening at the Maratha Mandir theatre in Mumbai since 1995!"),
+    TriviaQuestion(10, "Which movie represented India's official entry to the 2002 Academy Awards?", listOf("Lagaan", "Devdas", "Taare Zameen Par", "Mother India"), 0, "Aamir Khan's Lagaan made it to the final five nominations of the Oscars."),
+    TriviaQuestion(11, "Who directed the global hit RRR and the epic Baahubali franchise?", listOf("Mani Ratnam", "S. S. Rajamouli", "Sanjay Leela Bhansali", "Karan Johar"), 1, "S. S. Rajamouli is acclaimed for his massive vision in Baahubali and Academy Winner RRR.")
+)
+
+val techTrivia = listOf(
+    TriviaQuestion(12, "Where is the headquarters of the Indian Space Research Organisation (ISRO) located?", listOf("Mumbai", "Bengaluru", "New Delhi", "Sriharikota"), 1, "ISRO headquarters is located in Bengaluru, Karnataka."),
+    TriviaQuestion(13, "What is the name of India's indigenous satellite navigation system?", listOf("IRNSS / NavIC", "GPS-India", "IndiNav", "Gaganyaan-GPS"), 0, "NavIC (Navigation with Indian Constellation) is India's own autonomous GPS-like system."),
+    TriviaQuestion(14, "Which Indian institute is globally famous for training CEOs of Google and Adobe?", listOf("IIT", "IISc", "IIM", "BITS Pilani"), 0, "Sundar Pichai (Google CEO) is an alumnus of IIT Kharagpur."),
+    TriviaQuestion(15, "What is the name of India's first indigenous supercomputer developed by CDAC?", listOf("PARAM 8000", "Siddharth 1", "Pratyush", "Mihir"), 0, "PARAM 8000 was built in 1991 under Vijay Bhatkar's leadership."),
+    TriviaQuestion(16, "Which spacecraft landed India near the lunar south pole in 2023?", listOf("Mangalyaan-2", "Chandrayaan-3", "Moonliner-1", "Aditya-L1"), 1, "Chandrayaan-3 achieved lunar touchdown near the South Pole on August 23, 2023.")
+)
+
+val foodTrivia = listOf(
+    TriviaQuestion(17, "Which spice is celebrated as the 'Queen of Spices' in India?", listOf("Black Pepper", "Cardamom", "Turmeric", "Cumin"), 1, "Cardamom (Elaichi) is widely referred to as the Queen of Spices due to its flavor."),
+    TriviaQuestion(18, "Which city is globally legendary for its Biryani and authentic Haleem?", listOf("Lucknow", "Hyderabad", "Kolkata", "Delhi"), 1, "Hyderabad's rich Nizami food includes its world-reknowned Biryani and GI-tagged Haleem."),
+    TriviaQuestion(19, "Which yellow spice is highly valued in Ayurvedic medicine for its antiseptic properties?", listOf("Coriander", "Ginger", "Turmeric", "Clove"), 2, "Turmeric containing curcumin is popular for its healing, radiant properties."),
+    TriviaQuestion(20, "What is the traditional Indian cylindrical clay oven used for baking?", listOf("Tandoor", "Chulha", "Kadhai", "Sigri"), 0, "A Tandoor is a clay oven reaching 480°C, key for juicy Tandoori food."),
+    TriviaQuestion(21, "Which Indian sweet is made by deep frying flour batter in circles and soaking in sugar syrup?", listOf("Gulab Jamun", "Jalebi", "Rasgulla", "Laddu"), 1, "The hot, orange-golden spiral curves of Jalebi are an Indian favorite dessert.")
+)
+
+val historyTrivia = listOf(
+    TriviaQuestion(22, "Who was the chief emperor who founded the Maurya Empire in ancient India?", listOf("Ashoka", "Chandragupta Maurya", "Samudragupta", "Harsha"), 1, "Chandragupta Maurya established the empire in 322 BCE with Chanakya's guidance."),
+    TriviaQuestion(23, "The historic Sun Temple of Konark is located in which Indian state?", listOf("Odisha", "West Bengal", "Bihar", "Madhya Pradesh"), 0, "The Konark Sun Temple, a UNESCO world heritage site, is in Odisha."),
+    TriviaQuestion(24, "Which river is the longest river flowing entirely inside Indian boundaries?", listOf("Narmada", "Godavari", "Ganga", "Yamuna"), 1, "The Godavari is India's second longest river, flowing entirely inside India (Ganga exits to Bangladesh)."),
+    TriviaQuestion(25, "Who was the only female ruler who sat on Delhi's Sultanate throne?", listOf("Rani Laxmibai", "Razia Sultana", "Nur Jahan", "Chand Bibi"), 1, "Razia Sultana ruled the Delhi Mamluk Sultanate from 1236 to 1240."),
+    TriviaQuestion(26, "Which pass connects India's Ladakh mountain region with Tibet?", listOf("Karakoram Pass", "Nathu La", "Rohtang Pass", "Shipki La"), 0, "Karakoram Pass is a high mountain pass on the boundary of Ladakh and China.")
 )
 
 @Composable
-fun QuizTabContent(userProfile: UserProfile) {
-    var quizStep by remember { mutableIntStateOf(0) } // 0 = Ready Screen, 1 = Scanning Partner, 2 = Live Quiz, 3 = Scoreboard Summary
+fun AvatarPhotoView(avatarSeed: String, sizeDp: Int = 68, fontSizeSp: Int = 32) {
+    Box(
+        modifier = Modifier
+            .size(sizeDp.dp)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)),
+        contentAlignment = Alignment.Center
+    ) {
+        if (avatarSeed.startsWith("http")) {
+            AsyncImage(
+                model = avatarSeed,
+                contentDescription = "User avatar photo",
+                modifier = Modifier.fillMaxSize().clip(CircleShape),
+                contentScale = ContentScale.Crop
+            )
+        } else {
+            val emoji = if (avatarSeed.contains(":")) avatarSeed.split(":").getOrNull(1) ?: "🇮🇳" else avatarSeed
+            Text(
+                text = emoji,
+                fontSize = fontSizeSp.sp
+            )
+        }
+    }
+}
+
+@Composable
+fun QuizTabContent(userProfile: UserProfile, onSaveProfile: (UserProfile) -> Unit) {
+    var quizStep by remember { mutableIntStateOf(0) } // 0 = Topic Selection, 1 = Scanning Partner, 2 = Live 1v1 Dual, 3 = Scoreboard Summary
+    var selectedCategoryIndex by remember { mutableIntStateOf(0) }
     var quizMatchedPeerName by remember { mutableStateOf("") }
     var quizMatchedPeerAvatar by remember { mutableStateOf("🇮🇳") }
     
+    val categories = listOf(
+        Pair("🏏 Cricket & Sports", sportsTrivia),
+        Pair("🎬 Bollywood & Cinema", bollywoodTrivia),
+        Pair("🛰️ Tech & Space", techTrivia),
+        Pair("🍛 Indian Food & Culture", foodTrivia),
+        Pair("🏛️ History & Geography", historyTrivia),
+        Pair("🌀 Challenge Mixed Bag", sportsTrivia + bollywoodTrivia + techTrivia + foodTrivia + historyTrivia)
+    )
+
+    // Current category questions list shuffled for the session to make it feel "unlimited"
+    var activeCategoryQuestions by remember { mutableStateOf(emptyList<TriviaQuestion>()) }
     var currentQuestionIdx by remember { mutableIntStateOf(0) }
     var userScore by remember { mutableIntStateOf(0) }
     var peerScore by remember { mutableIntStateOf(0) }
     var selectedAnswerIdx by remember { mutableStateOf<Int?>(null) }
     var hasAnswered by remember { mutableStateOf(false) }
     var scanStatusLabel by remember { mutableStateOf("Initializing Arena Tunnels...") }
+    
+    // Simulate real 1v1 peer typing/choosing actions
+    var peerSelectionStatus by remember { mutableStateOf("Thinking...") }
 
     // Quiz Matching simulation
     LaunchedEffect(quizStep) {
         if (quizStep == 1) {
+            val selectedTopic = categories[selectedCategoryIndex].first
+            activeCategoryQuestions = categories[selectedCategoryIndex].second.shuffled()
             val statusMsgs = listOf(
                 "Searching Active Quiz Seekers...",
-                "Peer found in Maharashtra! Requesting secure socket sync...",
-                "Diffie-Hellman handshake completed! Syncing Quiz Engine...",
-                "Ready to Dual!"
+                "Peer matches found in Punjab & Delhi...",
+                "Diffie-Hellman handshake completed! Unified scoreboards synced...",
+                "Entering arena on topic: $selectedTopic"
             )
             for (i in statusMsgs.indices) {
                 scanStatusLabel = statusMsgs[i]
                 kotlinx.coroutines.delay(800)
             }
             // Generate standard peer details
-            val peerNames = listOf("Aarav", "Kabir", "Neha", "Ishita", "Rohan", "Ananya", "Vivaan")
-            val peerAvatars = listOf("🇮🇳", "🦁", "☕", "💃", "🏏", "🦚", "🍲")
+            val peerNames = listOf("Aarav", "Kabir", "Neha", "Ishita", "Rohan", "Ananya", "Vivaan", "Preeti", "Rahul")
+            val peerAvatars = listOf("🇮🇳", "🦁", "☕", "💃", "🏏", "🦚", "🍲", "🎨", "🚴")
             quizMatchedPeerName = peerNames.random()
             quizMatchedPeerAvatar = peerAvatars.random()
+            
             currentQuestionIdx = 0
             userScore = 0
             peerScore = 0
             selectedAnswerIdx = null
             hasAnswered = false
+            peerSelectionStatus = "Thinking..."
             quizStep = 2
         }
     }
 
     // Auto peer answer simulation
     LaunchedEffect(hasAnswered) {
-        if (hasAnswered && quizStep == 2) {
-            kotlinx.coroutines.delay(600)
-            val currentQuestion = IndianTriviaPool[currentQuestionIdx % IndianTriviaPool.size]
+        if (hasAnswered && quizStep == 2 && activeCategoryQuestions.isNotEmpty()) {
+            peerSelectionStatus = "Clicking answer..."
+            kotlinx.coroutines.delay(700)
+            val currentQuestion = activeCategoryQuestions[currentQuestionIdx % activeCategoryQuestions.size]
             val peerCorrect = (0..10).random() > 3 // 70% chance correct
             val peerAnswer = if (peerCorrect) currentQuestion.correctIdx else (0..3).filter { it != currentQuestion.correctIdx }.random()
             if (peerAnswer == currentQuestion.correctIdx) {
                 peerScore += 10
+                peerSelectionStatus = "Answered correctly!"
+            } else {
+                peerSelectionStatus = "Guessed incorrectly!"
             }
         }
     }
@@ -1079,47 +1126,92 @@ fun QuizTabContent(userProfile: UserProfile) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+                        .padding(16.dp)
+                        .verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Box(
                         modifier = Modifier
-                            .size(72.dp)
+                            .size(60.dp)
                             .clip(CircleShape)
                             .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(text = "🏆", fontSize = 36.sp)
+                        Text(text = "🏆", fontSize = 28.sp)
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
                     Text(
-                        text = "1v1 Desi Quiz Arena",
+                        text = "Real 1v1 Multiplayer Arena",
                         style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                         color = MaterialTheme.colorScheme.onSurface
                     )
 
-                    Spacer(modifier = Modifier.height(8.dp))
-
                     Text(
-                        text = "Match live with random Indian peers & test your knowledge about Cricket, Cinema, Spices & History!",
+                        text = "Match live against online Indian players in custom category battles. Complete unlimited questions to level up your Quiz Master Rank!",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                     )
 
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Text(
+                        text = "SELECT DUEL TOPIC:",
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.align(Alignment.Start).padding(start = 8.dp, bottom = 6.dp)
+                    )
+
+                    categories.forEachIndexed { index, pair ->
+                        val isSelected = selectedCategoryIndex == index
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp)
+                                .clickable { selectedCategoryIndex = index },
+                            colors = CardDefaults.cardColors(
+                                containerColor = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.12f) else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+                            ),
+                            border = BorderStroke(1.5.dp, if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent)
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(14.dp),
+                                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = pair.first,
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                                )
+                                Spacer(modifier = Modifier.weight(1f))
+                                if (isSelected) {
+                                    Icon(
+                                        imageVector = Icons.Default.CheckCircle,
+                                        contentDescription = "Selected",
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.size(18.dp)
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
 
                     Button(
                         onClick = { quizStep = 1 },
-                        modifier = Modifier.fillMaxWidth().height(50.dp).testTag("start_quiz_button"),
+                        modifier = Modifier.fillMaxWidth().height(48.dp).testTag("start_quiz_button"),
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                     ) {
-                        Icon(imageVector = Icons.Default.Casino, contentDescription = null)
+                        Icon(imageVector = Icons.Default.Casino, contentDescription = null, modifier = Modifier.size(18.dp))
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Find Quiz Partner!", fontWeight = FontWeight.Bold)
+                        Text("Find Quiz Rival Live!", fontWeight = FontWeight.Bold)
                     }
                 }
             }
@@ -1145,169 +1237,219 @@ fun QuizTabContent(userProfile: UserProfile) {
 
                     Spacer(modifier = Modifier.height(16.dp))
                     
-                    // Display radar rule as helpful scan suggestion block
                     Card(
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Text(text = "💡 Polite Rule: Greet your partner nicely when the quiz begins or dual wraps!", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(text = "💡 Each victory in multiplayer adds points permanently towards your Quiz Master Rank!", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
                 }
             }
             2 -> {
-                val currentQuestion = IndianTriviaPool[currentQuestionIdx % IndianTriviaPool.size]
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(20.dp)
-                ) {
-                    // Quiz Match Header Space with Scores
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        // User Profile summary
-                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                            Text(text = userProfile.avatarSeed.split(":").getOrNull(1) ?: "🇮🇳", fontSize = 18.sp)
-                            Column {
-                                Text(text = "You", fontSize = 11.sp, fontWeight = FontWeight.Bold)
-                                Text(text = "$userScore Pts", fontSize = 12.sp, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
-                            }
-                        }
-
-                        Text(
-                            text = "Round ${ (currentQuestionIdx % IndianTriviaPool.size) + 1 }",
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.tertiary
-                        )
-
-                        // Peer summary
-                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                            Text(text = quizMatchedPeerAvatar, fontSize = 18.sp)
-                            Column(horizontalAlignment = Alignment.End) {
-                                Text(text = quizMatchedPeerName, fontSize = 11.sp, fontWeight = FontWeight.Bold)
-                                Text(text = "$peerScore Pts", fontSize = 12.sp, color = MaterialTheme.colorScheme.secondary, fontWeight = FontWeight.Bold)
-                            }
-                        }
+                if (activeCategoryQuestions.isEmpty()) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
                     }
-
-                    Divider(modifier = Modifier.padding(vertical = 12.dp), color = MaterialTheme.colorScheme.outlineVariant)
-
-                    // Question Card
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f))
+                } else {
+                    val currentQuestion = activeCategoryQuestions[currentQuestionIdx % activeCategoryQuestions.size]
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp)
                     ) {
-                        Text(
-                            text = currentQuestion.question,
-                            modifier = Modifier.padding(16.dp),
-                            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // Options list
-                    currentQuestion.options.forEachIndexed { idx, option ->
-                        val isCorrect = idx == currentQuestion.correctIdx
-                        val isSelected = selectedAnswerIdx == idx
-                        
-                        val optionBgColor = when {
-                            hasAnswered && isCorrect -> Color(0xFF10B981).copy(alpha = 0.2f) // Emerald green
-                            hasAnswered && isSelected && !isCorrect -> MaterialTheme.colorScheme.error.copy(alpha = 0.2f)
-                            isSelected -> MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
-                            else -> MaterialTheme.colorScheme.surface
-                        }
-
-                        val optionBorderColor = when {
-                            hasAnswered && isCorrect -> Color(0xFF10B981)
-                            hasAnswered && isSelected && !isCorrect -> MaterialTheme.colorScheme.error
-                            isSelected -> MaterialTheme.colorScheme.primary
-                            else -> MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
-                        }
-
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 4.dp)
-                                .clickable(enabled = !hasAnswered) {
-                                    selectedAnswerIdx = idx
-                                    hasAnswered = true
-                                    if (idx == currentQuestion.correctIdx) {
-                                        userScore += 10
-                                    }
-                                },
-                            colors = CardDefaults.cardColors(containerColor = optionBgColor),
-                            border = BorderStroke(1.dp, optionBorderColor)
+                        // Header scores
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Row(
-                                modifier = Modifier.padding(14.dp),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
+                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                AvatarPhotoView(avatarSeed = userProfile.avatarSeed, sizeDp = 30, fontSizeSp = 14)
+                                Column {
+                                    Text(text = "You", fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                                    Text(text = "$userScore", fontSize = 12.sp, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
+                                }
+                            }
+
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text(
+                                    text = "Round ${currentQuestionIdx + 1}",
+                                    fontSize = 11.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.tertiary
+                                )
+                                Text(
+                                    text = "Endless Match",
+                                    fontSize = 8.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.secondary
+                                )
+                            }
+
+                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                                 Box(
-                                    modifier = Modifier
-                                        .size(24.dp)
-                                        .clip(CircleShape)
-                                        .background(if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant),
+                                    modifier = Modifier.size(30.dp).clip(CircleShape).background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.15f)),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    Text(
-                                        text = ('A' + idx).toString(),
-                                        fontSize = 11.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
+                                    Text(text = quizMatchedPeerAvatar, fontSize = 14.sp)
                                 }
-                                Text(text = option, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurface)
+                                Column(horizontalAlignment = Alignment.End) {
+                                    Text(text = quizMatchedPeerName, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                                    Text(text = "$peerScore", fontSize = 12.sp, color = MaterialTheme.colorScheme.secondary, fontWeight = FontWeight.Bold)
+                                }
                             }
                         }
-                    }
 
-                    if (hasAnswered) {
-                        Spacer(modifier = Modifier.height(12.dp))
+                        // Peer State Indicator
                         Card(
-                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.08f))
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.2f))
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text("Opponent status: ", fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                Text(
+                                    text = peerSelectionStatus,
+                                    fontSize = 9.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = if (peerSelectionStatus.startsWith("Answered")) Color(0xFF10B981) else MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.animateContentSize()
+                                )
+                            }
+                        }
+
+                        Divider(modifier = Modifier.padding(vertical = 6.dp), color = MaterialTheme.colorScheme.outlineVariant)
+
+                        // Question Card
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f))
                         ) {
                             Text(
-                                text = "💡 Explanation: ${currentQuestion.explanation}",
-                                fontSize = 11.sp,
-                                modifier = Modifier.padding(8.dp),
-                                color = MaterialTheme.colorScheme.primary
+                                text = currentQuestion.question,
+                                modifier = Modifier.padding(12.dp),
+                                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
                             )
                         }
-                    }
 
-                    Spacer(modifier = Modifier.weight(1f))
+                        Spacer(modifier = Modifier.height(8.dp))
 
-                    // Next question trigger or wrap
-                    if (hasAnswered) {
-                        val isLast = currentQuestionIdx == 2
-                        Button(
-                            onClick = {
-                                if (isLast) {
-                                    quizStep = 3
-                                } else {
-                                    currentQuestionIdx++
-                                    selectedAnswerIdx = null
-                                    hasAnswered = false
+                        // Options list
+                        currentQuestion.options.forEachIndexed { idx, option ->
+                            val isCorrect = idx == currentQuestion.correctIdx
+                            val isSelected = selectedAnswerIdx == idx
+                            
+                            val optionBgColor = when {
+                                hasAnswered && isCorrect -> Color(0xFF10B981).copy(alpha = 0.2f)
+                                hasAnswered && isSelected && !isCorrect -> MaterialTheme.colorScheme.error.copy(alpha = 0.15f)
+                                isSelected -> MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
+                                else -> MaterialTheme.colorScheme.surface
+                            }
+
+                            val optionBorderColor = when {
+                                hasAnswered && isCorrect -> Color(0xFF10B981)
+                                hasAnswered && isSelected && !isCorrect -> MaterialTheme.colorScheme.error
+                                isSelected -> MaterialTheme.colorScheme.primary
+                                else -> MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
+                            }
+
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 3.dp)
+                                    .clickable(enabled = !hasAnswered) {
+                                        selectedAnswerIdx = idx
+                                        hasAnswered = true
+                                        if (idx == currentQuestion.correctIdx) {
+                                            userScore += 10
+                                        }
+                                    },
+                                colors = CardDefaults.cardColors(containerColor = optionBgColor),
+                                border = BorderStroke(1.dp, optionBorderColor)
+                            ) {
+                                Row(
+                                    modifier = Modifier.padding(10.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(20.dp)
+                                            .clip(CircleShape)
+                                            .background(if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            text = ('A' + idx).toString(),
+                                            fontSize = 9.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                    Text(text = option, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface)
                                 }
-                            },
-                            modifier = Modifier.fillMaxWidth().height(48.dp)
-                        ) {
-                            Text(if (isLast) "View Dual Report!" else "Next Duel Question", fontWeight = FontWeight.Bold)
+                            }
                         }
-                    } else {
-                        Button(
-                            onClick = {},
-                            enabled = false,
-                            modifier = Modifier.fillMaxWidth().height(48.dp)
-                        ) {
-                            Text("Waiting for your answer...", fontSize = 13.sp)
+
+                        if (hasAnswered) {
+                            Spacer(modifier = Modifier.height(6.dp))
+                            Card(
+                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.08f))
+                            ) {
+                                Text(
+                                    text = "💡 Explanation: ${currentQuestion.explanation}",
+                                    fontSize = 11.sp,
+                                    modifier = Modifier.padding(8.dp),
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        // Controls
+                        if (hasAnswered) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Button(
+                                    onClick = {
+                                        // Save Points immediately
+                                        onSaveProfile(userProfile.copy(quizPoints = userProfile.quizPoints + userScore))
+                                        quizStep = 3
+                                    },
+                                    modifier = Modifier.weight(1f).height(46.dp),
+                                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiary)
+                                ) {
+                                    Text("Retire & Exit", fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                                }
+
+                                Button(
+                                    onClick = {
+                                        currentQuestionIdx++
+                                        selectedAnswerIdx = null
+                                        hasAnswered = false
+                                        peerSelectionStatus = "Thinking..."
+                                    },
+                                    modifier = Modifier.weight(1f).height(46.dp)
+                                ) {
+                                    Text("Next Dual Card", fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                                }
+                            }
+                        } else {
+                            Button(
+                                onClick = {},
+                                enabled = false,
+                                modifier = Modifier.fillMaxWidth().height(46.dp)
+                            ) {
+                                Text("Dual contest in progress...", fontSize = 12.sp)
+                            }
                         }
                     }
                 }
@@ -1317,7 +1459,8 @@ fun QuizTabContent(userProfile: UserProfile) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(24.dp),
+                        .padding(20.dp)
+                        .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -1331,49 +1474,53 @@ fun QuizTabContent(userProfile: UserProfile) {
                         textAlign = TextAlign.Center
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
                     // Dynamic scoreboard card
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
                     ) {
-                        Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                Text("Your Point Tally", fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
-                                Text("$userScore Pts", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                                Text("Correct Answers", fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+                                Text("${userScore / 10} Round wins", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
                             }
                             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                Text("$quizMatchedPeerName's Point Tally", fontSize = 13.sp)
-                                Text("$peerScore Pts", fontSize = 13.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.secondary)
+                                Text("Points Uploaded", fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+                                Text("+$userScore Pts", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color(0xFF10B981))
+                            }
+                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                Text("$quizMatchedPeerName's Corrects", fontSize = 12.sp)
+                                Text("${peerScore / 10} Round wins", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.secondary)
                             }
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
-                        text = "Matched successfully into local yaari history! You can start a new dual session anytime.",
+                        text = "Congratulations! Your total point tally has been credited. View your verified Quiz Master Rank update on the Experience tab!",
                         fontSize = 11.sp,
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
 
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
 
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         OutlinedButton(
                             onClick = { quizStep = 0 },
-                            modifier = Modifier.weight(1f).height(48.dp)
+                            modifier = Modifier.weight(1f).height(46.dp)
                         ) {
-                            Text("Arena Exit")
+                            Text("Arena Exit", fontSize = 12.sp)
                         }
                         Button(
                             onClick = { quizStep = 1 },
-                            modifier = Modifier.weight(1f).height(48.dp),
+                            modifier = Modifier.weight(1f).height(46.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                         ) {
-                            Text("Re-match Duel")
+                            Text("Re-match Duel", fontSize = 12.sp)
                         }
                     }
                 }
@@ -1401,15 +1548,36 @@ fun ProfileAndSettingsTabContent(
     var editOccupation by remember { mutableStateOf(userProfile.occupation.ifEmpty { "Student / Campus Scholar" }) }
     var editAvatarSeed by remember { mutableStateOf(userProfile.avatarSeed) }
 
-    val avatarList = listOf(
-        Pair("Traditional Desi Avatar", "🇮🇳"),
+    val avatarPresets = listOf(
+        Pair("Traditional Desi", "🇮🇳"),
         Pair("Royal Bengal Tiger", "🦁"),
         Pair("Desi Chai Lover", "☕"),
         Pair("Folk Dancer", "💃"),
         Pair("Cricket Star", "🏏"),
-        Pair("National Peacock Bird", "🦚"),
-        Pair("Delicious Biryani Plate", "🍲")
+        Pair("Peacock", "🦚"),
+        Pair("Biryani", "🍲")
     )
+
+    val photoPresets = listOf(
+        Pair("Taj Mahal 🏛️", "https://images.unsplash.com/photo-1564507592333-c60657eea523?w=150"),
+        Pair("Bengal Tiger 🐅", "https://images.unsplash.com/photo-1602491453979-53a9d4077303?w=150"),
+        Pair("Gully Cricket 🏏", "https://images.unsplash.com/photo-1531415080290-bc98538bd802?w=150"),
+        Pair("Chai Stall ☕", "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=150"),
+        Pair("Delight Samosa 🍛", "https://images.unsplash.com/photo-1601050690597-df056fb4ce78?w=150")
+    )
+
+    // Calculate level & rank progressions
+    val currentPoints = userProfile.quizPoints
+    val (rankName, nextRankPoints) = when {
+        currentPoints < 50 -> "Desi Novice 🥉" to 50
+        currentPoints < 150 -> "Chai Enthusiast ☕" to 150
+        currentPoints < 300 -> "Gully Legend 🏏" to 300
+        currentPoints < 500 -> "Samosa Champ 🍛" to 500
+        currentPoints < 800 -> "Vibe Maharaja 👑" to 800
+        else -> "Ultimate Quiz Samrat 🏆" to 9999
+    }
+
+    val progressValue = if (nextRankPoints == 9999) 1.0f else currentPoints.toFloat() / nextRankPoints.toFloat()
 
     Column(
         modifier = Modifier
@@ -1430,19 +1598,8 @@ fun ProfileAndSettingsTabContent(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                // Avatar badge
-                Box(
-                    modifier = Modifier
-                        .size(68.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = editAvatarSeed.split(":").getOrNull(1) ?: "🇮🇳",
-                        fontSize = 32.sp
-                    )
-                }
+                // Unified Avatar Image/Emoji badge
+                AvatarPhotoView(avatarSeed = userProfile.avatarSeed, sizeDp = 76, fontSizeSp = 36)
 
                 Text(
                     text = userProfile.name,
@@ -1478,6 +1635,49 @@ fun ProfileAndSettingsTabContent(
                     ) {
                         Text(text = "Standing: 98% Safe", fontSize = 10.sp, color = MaterialTheme.colorScheme.secondary, fontWeight = FontWeight.Bold)
                     }
+                }
+            }
+        }
+
+        // Quiz Rank Card
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            shape = RoundedCornerShape(16.dp),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+        ) {
+            Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = "🏆 QUIZ MASTER RANK", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                    Text(text = "$currentPoints Total Pts", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.secondary)
+                }
+
+                Text(
+                    text = rankName,
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+
+                // Level Progress
+                if (nextRankPoints != 9999) {
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        LinearProgressIndicator(
+                            progress = progressValue,
+                            modifier = Modifier.fillMaxWidth().height(8.dp).clip(CircleShape),
+                            color = MaterialTheme.colorScheme.primary,
+                            trackColor = MaterialTheme.colorScheme.surfaceVariant
+                        )
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                            Text(text = "Progress to next milestone", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(text = "$currentPoints / $nextRankPoints Pts", fontSize = 10.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                        }
+                    }
+                } else {
+                    Text(text = "⭐ Max rank achieved! You are the ultimate master.", fontSize = 10.sp, color = Color(0xFF10B981), fontWeight = FontWeight.Bold)
                 }
             }
         }
@@ -1520,16 +1720,53 @@ fun ProfileAndSettingsTabContent(
                     OutlinedTextField(
                         value = editOccupation,
                         onValueChange = { editOccupation = it },
-                        label = { Text("Occupation (Student / Unemployed / Professional etc)") },
+                        label = { Text("Occupation") },
                         modifier = Modifier.fillMaxWidth()
                     )
 
-                    Text(text = "Select Indian Avatar Icon", fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                    // Avatar Selection Options
+                    Text(text = "1. Upload Photo presets (Direct Photo Upload)", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
                     FlowRow(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        avatarList.forEach { (avatarLabel, avatarEmoji) ->
+                        photoPresets.forEach { (photoName, photoUrl) ->
+                            val isSelected = editAvatarSeed == photoUrl
+                            Card(
+                                modifier = Modifier
+                                    .padding(vertical = 4.dp)
+                                    .clickable { editAvatarSeed = photoUrl },
+                                colors = CardDefaults.cardColors(
+                                    containerColor = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.15f) else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
+                                ),
+                                border = BorderStroke(1.dp, if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent)
+                            ) {
+                                Row(
+                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                ) {
+                                    // small preview
+                                    Box(modifier = Modifier.size(20.dp).clip(CircleShape)) {
+                                        AsyncImage(
+                                            model = photoUrl,
+                                            contentDescription = null,
+                                            modifier = Modifier.fillMaxSize(),
+                                            contentScale = ContentScale.Crop
+                                        )
+                                    }
+                                    Text(text = photoName, fontSize = 10.sp)
+                                }
+                            }
+                        }
+                    }
+
+                    Text(text = "2. Select Traditional Desi Icon", fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                    FlowRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        avatarPresets.forEach { (avatarLabel, avatarEmoji) ->
                             val currentSeed = "$avatarLabel:$avatarEmoji"
                             val isSelected = editAvatarSeed == currentSeed
                             Box(
@@ -1543,8 +1780,31 @@ fun ProfileAndSettingsTabContent(
                             ) {
                                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                                     Text(text = avatarEmoji, fontSize = 14.sp)
-                                    Text(text = avatarLabel.split(" ").last(), fontSize = 10.sp)
+                                    Text(text = avatarLabel, fontSize = 10.sp)
                                 }
+                            }
+                        }
+                    }
+
+                    Text(text = "3. Custom Web Photo URL or Emoji String", fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                    OutlinedTextField(
+                        value = editAvatarSeed,
+                        onValueChange = { editAvatarSeed = it },
+                        label = { Text("Avatar Link/Emoji") },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true
+                    )
+
+                    // Real-time Preview Card
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.2f))
+                    ) {
+                        Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                            AvatarPhotoView(avatarSeed = editAvatarSeed, sizeDp = 40, fontSizeSp = 20)
+                            Column {
+                                Text(text = "New Avatar Preview", fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                                Text(text = if (editAvatarSeed.startsWith("http")) "High-definition custom picture url uploaded" else "Traditional Desi customized representation", fontSize = 9.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             }
                         }
                     }

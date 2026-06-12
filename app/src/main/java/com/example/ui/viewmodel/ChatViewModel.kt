@@ -117,11 +117,18 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
                 putString("interests", profile.interests.joinToString(","))
                 putString("gender", profile.gender)
                 putString("avatar_seed", profile.avatarSeed)
+                putInt("quiz_points", profile.quizPoints)
                 putBoolean("profile_completed", true)
                 apply()
             }
             _profileCompleted.value = true
         }
+    }
+
+    fun addQuizPoints(points: Int) {
+        val currentProfile = _userProfile.value
+        val updatedProfile = currentProfile.copy(quizPoints = currentProfile.quizPoints + points)
+        saveProfile(updatedProfile)
     }
 
     fun logoutProfile() {
@@ -484,6 +491,7 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
         val interests = if (interestsStr.isNotEmpty()) interestsStr.split(",") else emptyList()
         val gender = sharedPrefs.getString("gender", "") ?: ""
         val avatarSeed = sharedPrefs.getString("avatar_seed", "avatar_1") ?: "avatar_1"
-        return UserProfile(name, state, language, occupation, interests, gender, avatarSeed)
+        val quizPoints = sharedPrefs.getInt("quiz_points", 0)
+        return UserProfile(name, state, language, occupation, interests, gender, avatarSeed, quizPoints)
     }
 }
