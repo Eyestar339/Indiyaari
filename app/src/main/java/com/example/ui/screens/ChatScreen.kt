@@ -265,6 +265,41 @@ fun ChatScreen(
                 }
             }
 
+            // Interlocking Disappearing Messages Active Banner
+            AnimatedVisibility(
+                visible = isDisappearingMode,
+                enter = expandVertically() + fadeIn(),
+                exit = shrinkVertically() + fadeOut()
+            ) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 6.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFFBBF24).copy(alpha = 0.12f)),
+                    shape = RoundedCornerShape(12.dp),
+                    border = BorderStroke(1.dp, Color(0xFFFBBF24).copy(alpha = 0.3f))
+                ) {
+                    Row(
+                        modifier = Modifier.padding(10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Timer,
+                            contentDescription = null,
+                            tint = Color(0xFFFBBF24),
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Text(
+                            text = "⏳ Disappearing Messages is ACTIVE! Chats will dissolve and clear as soon as you exit the handshake.",
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+            }
+
             // Chat Feed List
             Box(
                 modifier = Modifier
@@ -285,6 +320,7 @@ fun ChatScreen(
                             ChatBubble(
                                 message = message,
                                 isSecureMode = isSecureMode,
+                                isDisappearingMode = isDisappearingMode,
                                 onBubbleClick = {
                                     if (message.isEncrypted) {
                                         selectedEncryptedMessage = message
@@ -660,6 +696,7 @@ fun ChatScreen(
 fun ChatBubble(
     message: Message,
     isSecureMode: Boolean,
+    isDisappearingMode: Boolean = false,
     onBubbleClick: () -> Unit
 ) {
     val isMe = message.isMe
@@ -706,26 +743,49 @@ fun ChatBubble(
                     )
                 }
 
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    if (message.isEncrypted) {
-                        Icon(
-                            imageVector = Icons.Default.Lock,
-                            contentDescription = "Encrypted",
-                            tint = MaterialTheme.colorScheme.secondary,
-                            modifier = Modifier
-                                .size(14.dp)
-                                .padding(end = 4.dp)
+                val isSticker = message.text.startsWith("[Sticker")
+                if (isSticker) {
+                    // E.g. "[Sticker ☕: ☕ Chai Adda]"
+                    val emojiStr = message.text.substringAfter("[Sticker ").substringBefore(":")
+                    val label = message.text.substringAfter(": ").substringBefore("]")
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(4.dp)
+                    ) {
+                        Text(text = emojiStr, fontSize = 48.sp)
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Text(
+                            text = label,
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = textColor,
+                            textAlign = TextAlign.Center
                         )
                     }
-                Text(
-                    text = message.text,
-                    fontSize = 14.sp,
-                    color = textColor,
-                    fontWeight = if (message.isEncrypted) FontWeight.Medium else FontWeight.Normal
-                )
+                } else {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        if (message.isEncrypted) {
+                            Icon(
+                                imageVector = Icons.Default.Lock,
+                                contentDescription = "Encrypted",
+                                tint = MaterialTheme.colorScheme.secondary,
+                                modifier = Modifier
+                                    .size(14.dp)
+                                    .padding(end = 4.dp)
+                            )
+                        }
+                        Text(
+                            text = message.text,
+                            fontSize = 14.sp,
+                            color = textColor,
+                            fontWeight = if (message.isEncrypted) FontWeight.Medium else FontWeight.Normal
+                        )
+                    }
                 }
 
                 if (isMe) {
@@ -754,6 +814,15 @@ fun ChatBubble(
                         fontSize = 8.sp,
                         color = MaterialTheme.colorScheme.secondary,
                         modifier = Modifier.padding(top = 4.dp)
+                    )
+                }
+
+                if (isDisappearingMode && !isSticker) {
+                    Text(
+                        text = "⏳ vanishes shortly",
+                        fontSize = 8.sp,
+                        color = if (isMe) textColor.copy(alpha = 0.55f) else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.55f),
+                        modifier = Modifier.padding(top = 3.dp)
                     )
                 }
             }
