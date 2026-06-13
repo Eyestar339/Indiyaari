@@ -96,7 +96,7 @@
     <div id="app" class="h-full w-full sm:max-w-[420px] sm:h-[880px] sm:max-h-[92vh] sm:my-auto sm:rounded-[36px] sm:border sm:border-gray-800/80 sm:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.85)] mx-auto flex flex-col relative bg-darkCard overflow-hidden transition-all duration-300">
         
         <!-- ================= PROFILE SETUP VIEW ================= -->
-        <div id="view-setup" class="flex-1 flex flex-col justify-start p-6 overflow-y-auto">
+        <div id="view-setup" class="flex-1 flex flex-col justify-start p-6 pb-28 overflow-y-auto">
             <!-- Branding -->
             <div class="flex flex-col items-center text-center mt-6 mb-8">
                 <div class="w-14 h-14 bg-primary/20 rounded-2xl flex items-center justify-center border border-primary/30 mb-3 shadow-[0_0_15px_rgba(167,139,250,0.1)]">
@@ -322,7 +322,7 @@
             </div>
 
             <!-- Scrollable Tab Content Viewport -->
-            <div class="flex-1 overflow-y-auto p-4 space-y-4" id="dashboard-tab-content">
+            <div class="flex-1 overflow-y-auto p-4 pb-32 space-y-4" id="dashboard-tab-content">
                 
                 <!-- Tab: FINDER -->
                 <div id="content-finder" class="space-y-4">
@@ -890,6 +890,334 @@
             { id: 26, question: "Which pass connects India's Ladakh mountain region with Tibet?", options: ["Karakoram Pass", "Nathu La", "Rohtang Pass", "Shipki La"], correctIdx: 0, explanation: "Karakoram Pass is a high mountain pass on the boundary of Ladakh and China." }
         ];
 
+        const indianStatesData = [
+            { name: "Maharashtra", capital: "Mumbai", language: "Marathi", peak: "Kalsubai", dance: "Lavani" },
+            { name: "Karnataka", capital: "Bengaluru", language: "Kannada", peak: "Mullayanagiri", dance: "Yakshagana" },
+            { name: "Tamil Nadu", capital: "Chennai", language: "Tamil", peak: "Doddabetta", dance: "Bharatanatyam" },
+            { name: "Kerala", capital: "Thiruvananthapuram", language: "Malayalam", peak: "Anamudi", dance: "Kathakali" },
+            { name: "Gujarat", capital: "Gandhinagar", language: "Gujarati", peak: "Girnar", dance: "Garba" },
+            { name: "Rajasthan", capital: "Jaipur", language: "Rajasthani", peak: "Guru Shikhar", dance: "Ghoomar" },
+            { name: "Punjab", capital: "Chandigarh", language: "Punjabi", peak: "Naina Devi Range", dance: "Bhangra" },
+            { name: "West Bengal", capital: "Kolkata", language: "Bengali", peak: "Sandakphu", dance: "Chhau" },
+            { name: "Assam", capital: "Dispur", language: "Assamese", peak: "Chenghehishon", dance: "Bihu" },
+            { name: "Uttar Pradesh", capital: "Lucknow", language: "Hindi", peak: "Amsot Peak", dance: "Kathak" },
+            { name: "Goa", capital: "Panaji", language: "Konkani", peak: "Sonsogor", dance: "Fugdi" },
+            { name: "Andhra Pradesh", capital: "Amaravati", language: "Telugu", peak: "Arma Konda", dance: "Kuchipudi" },
+            { name: "Odisha", capital: "Bhubaneswar", language: "Odia", peak: "Deomali", dance: "Odissi" },
+            { name: "Bihar", capital: "Patna", language: "Hindi", peak: "Someshwar Fort", dance: "Jat-Jatin" }
+        ];
+
+        const indianFoodData = [
+            { dish: "Vada Pav", origin: "Maharashtra", type: "Fried Potato Slider street food" },
+            { dish: "Dhokla", origin: "Gujarat", type: "Steamed Fermented Chickpea Savory Cake" },
+            { dish: "Lassi", origin: "Punjab", type: "Creamy Sweetened Yogurt cooler" },
+            { dish: "Roshogolla", origin: "West Bengal", type: "Spongy cottage cheese dessert in syrup" },
+            { dish: "Idli Sambar", origin: "South India", type: "Steamed fluffy rice cakes with steaming lentil chowder" },
+            { dish: "Biryani", origin: "Hyderabad, Telangana", type: "Fragrant highly spiced Basmati rice layered dish" },
+            { dish: "Puran Poli", origin: "Maharashtra", type: "Sweet flatbread loaded with split chickpea and cardamon" },
+            { dish: "Mysore Pak", origin: "Karnataka", type: "Mouth-dissolving ghee, sugar and gram-flour sweet" },
+            { dish: "Litti Chokha", origin: "Bihar", type: "Bakery style roasted wheat flour dough ball stuffed with sattu" },
+            { dish: "Gajar Ka Halwa", origin: "North India", type: "Grated and sweetened sweet red carrot warm pudding" }
+        ];
+
+        const bollywoodData = [
+            { movie: "Sholay", director: "Ramesh Sippy", year: "1975", iconic: "Basanti, in front of these dogs don't dance!" },
+            { movie: "DDLJ", director: "Aditya Chopra", year: "1995", iconic: "Bade bade deshon mein, aisi chhoti chhoti baatein..." },
+            { movie: "3 Idiots", director: "Rajkumar Hirani", year: "2009", iconic: "Aal izz well!" },
+            { movie: "RRR", director: "S. S. Rajamouli", year: "2022", iconic: "Naatu Naatu!" },
+            { movie: "Lagaan", director: "Ashutosh Gowariker", year: "2001", iconic: "Hum dugna lagaan barenge" },
+            { movie: "Mughal-e-Azam", director: "K. Asif", year: "1960", iconic: "Anarkali, Salim tujhe marne nahi dega, aur hum tujhe jeene nahi denge" },
+            { movie: "Devdas", director: "Sanjay Leela Bhansali", year: "2002", iconic: "Kaun kambakht bardaasht karne ko peeta hai..." },
+            { movie: "Gangs of Wasseypur", director: "Anurag Kashyap", year: "2012", iconic: "Sabka badla lega re tera Faizal" }
+        ];
+
+        const indianTechData = [
+            { entity: "ISRO", accomplishment: "Conducting Chandrayaan-3 lunar south pole touchdown", established: "1969" },
+            { entity: "CDAC", accomplishment: "Assembling India's first indigenous supercomputer PARAM 8000", established: "1988" },
+            { entity: "NPCI", accomplishment: "Launching the Unified Payments Interface (UPI) system", established: "2008" },
+            { entity: "BARC", accomplishment: "Performing nuclear fuel research at Trombay", established: "1954" },
+            { entity: "DRDO", accomplishment: "Devising localized ballistic missile systems like Agni", established: "1958" }
+        ];
+
+        const indianMonumentsData = [
+            { name: "Taj Mahal", location: "Agra, Uttar Pradesh", builder: "Shah Jahan", style: "Mughal Architecture" },
+            { name: "Hawa Mahal", location: "Jaipur, Rajasthan", builder: "Maharaja Sawai Pratap Singh", style: "Rajput Architecture" },
+            { name: "Qutub Minar", location: "Delhi", builder: "Qutb-ud-din Aibak", style: "Indo-Islamic" },
+            { name: "Charminar", location: "Hyderabad, Telangana", builder: "Muhammad Quli Qutb Shah", style: "Islamic" },
+            { name: "Sun Temple", location: "Konark, Odisha", builder: "King Narasimhadeva I", style: "Kalinga Architecture" },
+            { name: "Gateway of India", location: "Mumbai, Maharashtra", builder: "George Wittet", style: "Indo-Saracenic" },
+            { name: "Ajanta Caves", location: "Aurangabad, Maharashtra", builder: "Satavahana & Vakataka dynasties", style: "Rock-cut Buddhist" }
+        ];
+
+        const indianSportsLegends = [
+            { player: "Sachin Tendulkar", sport: "Cricket", record: "100 international centuries" },
+            { player: "Neeraj Chopra", sport: "Javelin Throw", record: "Olympic Gold Medal in Tokyo 2020" },
+            { player: "Abhinav Bindra", sport: "Shooting", record: "First individual Olympic Gold for India (Beijing 2008)" },
+            { player: "Major Dhyan Chand", sport: "Field Hockey", record: "3 Olympic Gold Medals between 1928-1936" },
+            { player: "P.V. Sindhu", sport: "Badminton", record: "First Indian woman to win two individual Olympic medals" },
+            { player: "Mary Kom", sport: "Boxing", record: "6 World Championship Gold medals" },
+            { player: "Viswanathan Anand", sport: "Chess", record: "First Indian Grandmaster & 5-time World Champion" }
+        ];
+
+        const indianCEOsAndFounders = [
+            { leader: "Sundar Pichai", company: "Alphabet & Google", almaMater: "IIT Kharagpur" },
+            { leader: "Satya Nadella", company: "Microsoft", almaMater: "Manipal Institute of Technology" },
+            { leader: "Shantanu Narayen", company: "Adobe Inc.", almaMater: "Osmania University" },
+            { leader: "Neal Mohan", company: "YouTube", almaMater: "Stanford University" },
+            { leader: "Narayana Murthy", company: "Infosys", almaMater: "IIT Kanpur" },
+            { leader: "Azim Premji", company: "Wipro", almaMater: "Stanford University" },
+            { leader: "Ratan Tata", company: "Tata Group", almaMater: "Cornell University" }
+        ];
+
+        function getMoreQuestions(category, count = 5) {
+            let staticList = [];
+            if (category === 'sports') staticList = sportsTrivia;
+            else if (category === 'bollywood') staticList = bollywoodTrivia;
+            else if (category === 'tech') staticList = techTrivia;
+            else if (category === 'food') staticList = foodTrivia;
+            else if (category === 'history') staticList = historyTrivia;
+            else {
+                staticList = [...sportsTrivia, ...bollywoodTrivia, ...techTrivia, ...foodTrivia, ...historyTrivia];
+            }
+
+            let proceduralList = [];
+
+            // Geography & State metrics
+            if (category === 'history' || category === 'mixed' || category === 'museum') {
+                indianStatesData.forEach(st => {
+                    // Capital
+                    let capOptions = [st.capital];
+                    while (capOptions.length < 4) {
+                        const randomCap = indianStatesData[Math.floor(Math.random() * indianStatesData.length)].capital;
+                        if (!capOptions.includes(randomCap)) capOptions.push(randomCap);
+                    }
+                    capOptions = shuffleArray(capOptions);
+                    proceduralList.push({
+                        id: 1000 + Math.random(),
+                        question: `Which city serves as the official administrative capital of the state of ${st.name}?`,
+                        options: capOptions,
+                        correctIdx: capOptions.indexOf(st.capital),
+                        explanation: `The capital city of the state of ${st.name} is ${st.capital}.`
+                    });
+
+                    // Language
+                    let langOptions = [st.language];
+                    while (langOptions.length < 4) {
+                        const randomLang = indianStatesData[Math.floor(Math.random() * indianStatesData.length)].language;
+                        if (!langOptions.includes(randomLang)) langOptions.push(randomLang);
+                    }
+                    langOptions = shuffleArray(langOptions);
+                    proceduralList.push({
+                        id: 1100 + Math.random(),
+                        question: `Which language is constitutionally or widely spoken in the state of ${st.name}?`,
+                        options: langOptions,
+                        correctIdx: langOptions.indexOf(st.language),
+                        explanation: `${st.language} is the major native language spoken in the state of ${st.name}.`
+                    });
+
+                    // Dance
+                    let danceOptions = [st.dance];
+                    while (danceOptions.length < 4) {
+                        const randomDance = indianStatesData[Math.floor(Math.random() * indianStatesData.length)].dance;
+                        if (!danceOptions.includes(randomDance)) danceOptions.push(randomDance);
+                    }
+                    danceOptions = shuffleArray(danceOptions);
+                    proceduralList.push({
+                        id: 1200 + Math.random(),
+                        question: `The beautiful traditional visual art or folk dance form of '${st.dance}' originated from which Indian state?`,
+                        options: danceOptions,
+                        correctIdx: danceOptions.indexOf(st.dance),
+                        explanation: `'${st.dance}' is a celebrated cultural dance belonging to the state of ${st.name}.`
+                    });
+                });
+            }
+
+            // Food & Culture
+            if (category === 'food' || category === 'mixed') {
+                indianFoodData.forEach(fd => {
+                    let originOptions = [fd.origin];
+                    while (originOptions.length < 4) {
+                        const randomOrigin = indianFoodData[Math.floor(Math.random() * indianFoodData.length)].origin;
+                        if (!originOptions.includes(randomOrigin)) originOptions.push(randomOrigin);
+                    }
+                    originOptions = shuffleArray(originOptions);
+                    proceduralList.push({
+                        id: 2000 + Math.random(),
+                        question: `The iconic mouth-watering dish/beverage '${fd.dish}' has its culinary roots inside which state or city?`,
+                        options: originOptions,
+                        correctIdx: originOptions.indexOf(fd.origin),
+                        explanation: `'${fd.dish}' is native and famous in ${fd.origin}.`
+                    });
+
+                    let descOptions = [fd.type];
+                    while (descOptions.length < 4) {
+                        const randomDesc = indianFoodData[Math.floor(Math.random() * indianFoodData.length)].type;
+                        if (!descOptions.includes(randomDesc)) descOptions.push(randomDesc);
+                    }
+                    descOptions = shuffleArray(descOptions);
+                    proceduralList.push({
+                        id: 2100 + Math.random(),
+                        question: `Which food is traditionally described as a '${fd.type}' in Indian cuisine?`,
+                        options: descOptions,
+                        correctIdx: descOptions.indexOf(fd.type),
+                        explanation: `'${fd.dish}' is prepared as a '${fd.type}' and enjoyed highly across India.`
+                    });
+                });
+            }
+
+            // Bollywood and Cinema
+            if (category === 'bollywood' || category === 'mixed') {
+                bollywoodData.forEach(bd => {
+                    let dirOptions = [bd.director];
+                    while (dirOptions.length < 4) {
+                        const randomDir = bollywoodData[Math.floor(Math.random() * bollywoodData.length)].director;
+                        if (!dirOptions.includes(randomDir)) dirOptions.push(randomDir);
+                    }
+                    dirOptions = shuffleArray(dirOptions);
+                    proceduralList.push({
+                        id: 3000 + Math.random(),
+                        question: `Who was the director of the major Bollywood movie success '${bd.movie}'?`,
+                        options: dirOptions,
+                        correctIdx: dirOptions.indexOf(bd.director),
+                        explanation: `The phenomenal blockbuster movie '${bd.movie}' was directed by ${bd.director}.`
+                    });
+
+                    let dialOptions = [bd.iconic];
+                    while (dialOptions.length < 4) {
+                        const randomDial = bollywoodData[Math.floor(Math.random() * bollywoodData.length)].iconic;
+                        if (!dialOptions.includes(randomDial)) dialOptions.push(randomDial);
+                    }
+                    dialOptions = shuffleArray(dialOptions);
+                    proceduralList.push({
+                        id: 3100 + Math.random(),
+                        question: `The legendary dialogue: "${bd.iconic}" belongs to which popular Indian film?`,
+                        options: dialOptions,
+                        correctIdx: dialOptions.indexOf(bd.iconic),
+                        explanation: `This iconic line belongs to the blockbuster movie '${bd.movie}'.`
+                    });
+                });
+            }
+
+            // Tech and Space
+            if (category === 'tech' || category === 'mixed') {
+                indianTechData.forEach(td => {
+                    let dOptions = [td.accomplishment];
+                    while (dOptions.length < 4) {
+                        const randomD = indianTechData[Math.floor(Math.random() * indianTechData.length)].accomplishment;
+                        if (!dOptions.includes(randomD)) dOptions.push(randomD);
+                    }
+                    dOptions = shuffleArray(dOptions);
+                    proceduralList.push({
+                        id: 4000 + Math.random(),
+                        question: `Which technological milestone is attributed to the proud Indian organization '${td.entity}'?`,
+                        options: dOptions,
+                        correctIdx: dOptions.indexOf(td.accomplishment),
+                        explanation: `${td.entity} is globally or nationally acclaimed for: ${td.accomplishment}.`
+                    });
+                });
+
+                // dynamic CEO/Founder generation
+                indianCEOsAndFounders.forEach(ceo => {
+                    let companyOptions = [ceo.company];
+                    while (companyOptions.length < 4) {
+                        const randCeo = indianCEOsAndFounders[Math.floor(Math.random() * indianCEOsAndFounders.length)];
+                        if (!companyOptions.includes(randCeo.company)) companyOptions.push(randCeo.company);
+                    }
+                    companyOptions = shuffleArray(companyOptions);
+                    proceduralList.push({
+                        id: 7000 + Math.random(),
+                        question: `Which global tech giant or legendary Indian company is/was steered by CEO/founder '${ceo.leader}'?`,
+                        options: companyOptions,
+                        correctIdx: companyOptions.indexOf(ceo.company),
+                        explanation: `${ceo.leader} plays/played a key role in heading ${ceo.company}.`
+                    });
+
+                    let collegeOptions = [ceo.almaMater];
+                    while (collegeOptions.length < 4) {
+                        const randCeo = indianCEOsAndFounders[Math.floor(Math.random() * indianCEOsAndFounders.length)];
+                        if (!collegeOptions.includes(randCeo.almaMater)) collegeOptions.push(randCeo.almaMater);
+                    }
+                    collegeOptions = shuffleArray(collegeOptions);
+                    proceduralList.push({
+                        id: 7100 + Math.random(),
+                        question: `From which prominent academic institution did '${ceo.leader}' pursue their education?`,
+                        options: collegeOptions,
+                        correctIdx: collegeOptions.indexOf(ceo.almaMater),
+                        explanation: `${ceo.leader} graduated from ${ceo.almaMater}.`
+                    });
+                });
+            }
+
+            // History, Monuments & Geography
+            if (category === 'history' || category === 'mixed' || category === 'museum') {
+                indianMonumentsData.forEach(mon => {
+                    let locOptions = [mon.location];
+                    while (locOptions.length < 4) {
+                        const randMon = indianMonumentsData[Math.floor(Math.random() * indianMonumentsData.length)];
+                        if (!locOptions.includes(randMon.location)) locOptions.push(randMon.location);
+                    }
+                    locOptions = shuffleArray(locOptions);
+                    proceduralList.push({
+                        id: 5000 + Math.random(),
+                        question: `In which historic location of India can you find the magnificent monument of '${mon.name}'?`,
+                        options: locOptions,
+                        correctIdx: locOptions.indexOf(mon.location),
+                        explanation: `'${mon.name}' is situated in ${mon.location}.`
+                    });
+
+                    let buildOptions = [mon.builder];
+                    while (buildOptions.length < 4) {
+                        const randMon = indianMonumentsData[Math.floor(Math.random() * indianMonumentsData.length)];
+                        if (!buildOptions.includes(randMon.builder)) buildOptions.push(randMon.builder);
+                    }
+                    buildOptions = shuffleArray(buildOptions);
+                    proceduralList.push({
+                        id: 5100 + Math.random(),
+                        question: `The historic masterpiece of '${mon.name}' was famously commissioned by or is associated with:`,
+                        options: buildOptions,
+                        correctIdx: buildOptions.indexOf(mon.builder),
+                        explanation: `${mon.name} is culturally linked to ${mon.builder}.`
+                    });
+                });
+            }
+
+            // Sports & Cricket Legends
+            if (category === 'sports' || category === 'mixed') {
+                indianSportsLegends.forEach(lg => {
+                    let sportOptions = [lg.sport];
+                    while (sportOptions.length < 4) {
+                        const randLegend = indianSportsLegends[Math.floor(Math.random() * indianSportsLegends.length)];
+                        if (!sportOptions.includes(randLegend.sport)) sportOptions.push(randLegend.sport);
+                    }
+                    sportOptions = shuffleArray(sportOptions);
+                    proceduralList.push({
+                        id: 6000 + Math.random(),
+                        question: `The legendary Indian sports figure '${lg.player}' is globally celebrated/associated with which game?`,
+                        options: sportOptions,
+                        correctIdx: sportOptions.indexOf(lg.sport),
+                        explanation: `${lg.player} is widely renowned for their contribution to ${lg.sport}.`
+                    });
+
+                    let recOptions = [lg.record];
+                    while (recOptions.length < 4) {
+                        const randLegend = indianSportsLegends[Math.floor(Math.random() * indianSportsLegends.length)];
+                        if (!recOptions.includes(randLegend.record)) recOptions.push(randLegend.record);
+                    }
+                    recOptions = shuffleArray(recOptions);
+                    proceduralList.push({
+                        id: 6100 + Math.random(),
+                        question: `Which momentous achievement in Indian sports history is attributed to '${lg.player}'?`,
+                        options: recOptions,
+                        correctIdx: recOptions.indexOf(lg.record),
+                        explanation: `${lg.player} achieved the incredible milestone of ${lg.record}!`
+                    });
+                });
+            }
+
+            const merged = [...staticList, ...proceduralList];
+            return shuffleArray(merged).slice(0, count);
+        }
+
         const quizCategories = [
             { name: "🏏 Cricket & Sports Trivia", pool: "sports" },
             { name: "🎬 Bollywood & Cinema", pool: "bollywood" },
@@ -935,6 +1263,42 @@
         let quizHasAnswered = false;
         let quizScanStatusLabel = "Search Active Quiz Seekers...";
         let quizPeerSelectionStatus = "Thinking...";
+
+        // Tournament specific states
+        let quizSubMode = 'match'; // 'match' or 'tournament'
+        let isTournamentMode = false;
+        let tournamentPlayers = [];
+        let tournamentRound = 0; // 0..5
+        let tournamentStep = 0; // 0: Intro, 1: Bracket Match List, 2: Active Gameplay (matches standard with quizStep = 2), 3: Post-match Results, 4: Champion Screen
+        let tournamentMatches = [];
+        let tournamentUserOpponent = null;
+        let tournamentHasCompletedRound = false;
+        const tournamentBounty = 600;
+
+        const vibrantRealPlayersPool = [
+            { name: "Rahul Sharma", state: "Maharashtra" }, { name: "Priya Patel", state: "Gujarat" }, { name: "Amit Hegde", state: "Karnataka" }, { name: "Ananya Iyer", state: "Tamil Nadu" },
+            { name: "Vikram Nair", state: "Kerala" }, { name: "Divya Rathore", state: "Rajasthan" }, { name: "Rohan Singh", state: "Punjab" }, { name: "Sneha Das", state: "West Bengal" },
+            { name: "Aditya Bhatt", state: "Gujarat" }, { name: "Kajal Saikia", state: "Assam" }, { name: "Suresh Kumar", state: "Uttar Pradesh" }, { name: "Neha Mendes", state: "Goa" },
+            { name: "Arjun Reddy", state: "Andhra Pradesh" }, { name: "Pooja Patnaik", state: "Odisha" }, { name: "Manish Yadav", state: "Bihar" }, { name: "Swati Hooda", state: "Haryana" },
+            { name: "Sameer Joshi", state: "Madhya Pradesh" }, { name: "Shruti Khurana", state: "Delhi" }, { name: "Gaurav Sawant", state: "Maharashtra" }, { name: "Ritu Murthy", state: "Karnataka" },
+            { name: "Karan Johar", state: "Maharashtra" }, { name: "Aishwarya Sen", state: "West Bengal" }, { name: "Abhishek Rao", state: "Tamil Nadu" }, { name: "Meera Krishnan", state: "Kerala" },
+            { name: "Rajesh Varma", state: "Madhya Pradesh" }, { name: "Jyoti Deshmukh", state: "Maharashtra" }, { name: "Deepak Chauhan", state: "Uttar Pradesh" }, { name: "Preeti Mishra", state: "Bihar" },
+            { name: "Sandeep Gill", state: "Punjab" }, { name: "Nisha Goel", state: "Delhi" }, { name: "Sunil Soren", state: "Jharkhand" }, { name: "Mamta Rawat", state: "Uttarakhand" },
+            { name: "Tarun Chawla", state: "Delhi" }, { name: "Sonia Gupte", state: "Maharashtra" }, { name: "Kartik Thakur", state: "Himachal Pradesh" }, { name: "Tanya Misra", state: "Uttar Pradesh" },
+            { name: "Vishal Dev", state: "Assam" }, { name: "Aarti Bora", state: "Assam" }, { name: "Vinay Prasad", state: "Karnataka" }, { name: "Anju Kurian", state: "Kerala" },
+            { name: "Akash Barua", state: "Tripura" }, { name: "Preet Dhillon", state: "Punjab" }, { name: "Raj Malhotra", state: "Maharashtra" }, { name: "Simran Kaur", state: "Delhi" },
+            { name: "Vijay Ranga", state: "Andhra Pradesh" }, { name: "Seema Parveen", state: "Telangana" }, { name: "Harish Murmu", state: "Jharkhand" }, { name: "Kiran Lal", state: "Union Territory" },
+            { name: "Narendra Roy", state: "West Bengal" }, { name: "Kavita Pillai", state: "Tamil Nadu" }, { name: "Mohan Lal", state: "Kerala" }, { name: "Dinesh Kumar", state: "Haryana" },
+            { name: "Ravi Teja", state: "Andhra Pradesh" }, { name: "Sanjay Dutt", state: "Maharashtra" }, { name: "Jatin Sapru", state: "Delhi" }, { name: "Nitin Gadkari", state: "Maharashtra" },
+            { name: "Sachin More", state: "Maharashtra" }, { name: "Anil Kapoor", state: "Maharashtra" }, { name: "Yash Gowda", state: "Karnataka" }, { name: "Bhavesh Kumar", state: "Rajasthan" },
+            { name: "Sheetal Verma", state: "Uttar Pradesh" }, { name: "Latika Roy", state: "West Bengal" }, { name: "Sagar Shinde", state: "Maharashtra" }
+        ];
+
+        const humanCompetitiveAvatars = [
+            "Traditional Desi:🇮🇳", "Traditional Desi:🍲", "Traditional Desi:🚀", "Traditional Desi:🎨", "Traditional Desi:🪕", 
+            "Traditional Desi:🏏", "Traditional Desi:💃", "Traditional Desi:🎻", "Traditional Desi:🎨", "Traditional Desi:🍲",
+            "Traditional Desi:🚀", "Traditional Desi:🏏", "Traditional Desi:💃", "Traditional Desi:🎻", "Traditional Desi:🎨"
+        ];
 
         // Profile Editing local buffers
         let isEditingProfile = false;
@@ -1523,6 +1887,13 @@
             if (!container) return;
             container.innerHTML = '';
 
+            // If we are in Tournament Mode and on selector/finish phases, render custom Tournament pages
+            if (isTournamentMode && (quizStep === 0 || quizStep === 3)) {
+                renderTournamentTabContent();
+                lucide.createIcons();
+                return;
+            }
+
             if (quizStep === 0) {
                 // Topic Selector view
                 let topicsHtml = quizCategories.map((cat, idx) => {
@@ -1538,12 +1909,20 @@
                             </div>
                             <span class="text-xs font-black text-white relative z-10 block">${cat.name}</span>
                             <div class="flex justify-between items-center mt-3 relative z-10">
-                                <span class="text-[9px] text-primary font-bold bg-primary/10 px-2 py-0.5 rounded uppercase tracking-wider">6 Questions</span>
-                                <span class="text-[10px] text-gray-400 group-hover:translate-x-1 transition-all">Select Category &rarr;</span>
+                                <span class="text-[9px] text-primary font-bold bg-primary/10 px-2 py-0.5 rounded uppercase tracking-wider">Unlimited</span>
+                                <span class="text-[10px] text-gray-400 group-hover:translate-x-1 transition-all">Select &rarr;</span>
                             </div>
                         </div>
                     `;
                 }).join('');
+
+                const btnMatchClass = quizSubMode === 'match' 
+                    ? "bg-primary/20 border-2 border-primary text-primary" 
+                    : "bg-darkCard/40 border border-gray-800 text-gray-400 hover:text-white";
+                
+                const btnTournamentClass = quizSubMode === 'tournament' 
+                    ? "bg-amber-500/20 border-2 border-amber-500 text-amber-500" 
+                    : "bg-darkCard/40 border border-gray-800 text-gray-400 hover:text-white";
 
                 container.innerHTML = `
                     <div class="space-y-4">
@@ -1560,19 +1939,72 @@
                             </div>
                         </div>
 
-                        <div class="flex justify-between items-center px-1 pt-1">
-                            <h4 class="text-xs font-black uppercase tracking-widest text-gray-400">Select Arena Topic</h4>
-                            <span class="text-[9px] text-gray-500 font-mono">1:1 Multiplayer</span>
+                        <!-- SUB-MODE SELECTOR BUTTONS -->
+                        <div class="grid grid-cols-2 gap-3 mb-1">
+                            <button onclick="setQuizSubMode('match')" class="py-3 rounded-2xl transition-all font-black text-xs flex items-center justify-center gap-1.5 ${btnMatchClass}">
+                                <i data-lucide="zap" class="w-4 h-4"></i>
+                                Standard 1v1 Match
+                            </button>
+                            <button onclick="setQuizSubMode('tournament')" class="py-3 rounded-2xl transition-all font-black text-xs flex items-center justify-center gap-1.5 ${btnTournamentClass}">
+                                <i data-lucide="trophy" class="w-4 h-4 text-amber-500"></i>
+                                64-Player Tournament
+                            </button>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-3.5">
-                            ${topicsHtml}
-                        </div>
+                        ${quizSubMode === 'match' ? `
+                            <div class="flex justify-between items-center px-1 pt-1">
+                                <h4 class="text-xs font-black uppercase tracking-widest text-gray-400">Select Arena Topic</h4>
+                                <span class="text-[9px] text-gray-500 font-mono">1:1 Multiplayer</span>
+                            </div>
 
-                        <button onclick="startQuizMatchingAnimation()" class="w-full mt-4 py-4 rounded-2xl bg-gradient-to-r from-primary to-accent text-darkBg font-black text-sm shadow-[0_4px_20px_rgba(167,139,250,0.3)] hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2">
-                            <i data-lucide="zap" class="w-5 h-5 animate-bounce"></i>
-                            SCAN FOR 1v1 PARTNER
-                        </button>
+                            <div class="grid grid-cols-2 gap-3.5">
+                                ${topicsHtml}
+                            </div>
+
+                            <button onclick="startQuizMatchingAnimation()" class="w-full mt-4 py-4 rounded-2xl bg-gradient-to-r from-primary to-accent text-darkBg font-black text-sm shadow-[0_4px_20px_rgba(167,139,250,0.3)] hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2">
+                                <i data-lucide="zap" class="w-5 h-5 animate-bounce"></i>
+                                SCAN FOR 1v1 PARTNER
+                            </button>
+                        ` : `
+                            <!-- Tournament Setup -->
+                            <div class="bg-darkCard/50 border border-amber-500/20 rounded-3xl p-6 text-center space-y-5">
+                                <div class="w-16 h-16 mx-auto bg-amber-500/10 rounded-full flex items-center justify-center border border-amber-500/30">
+                                    <i data-lucide="award" class="w-8 h-8 text-amber-500"></i>
+                                </div>
+                                <div class="space-y-1">
+                                    <h4 class="text-base font-black text-white">🏆 Desi National Championship</h4>
+                                    <p class="text-xs text-gray-400 leading-relaxed font-semibold">
+                                        Test your knowledge in a 64-player knockout bracket against <b class="text-amber-500">active real players</b> under Indiyaari's SafeMatch™ Human Verification policy. Zero bots allowed!
+                                    </p>
+                                </div>
+                                <div class="grid grid-cols-3 gap-2.5 pt-1.5 text-center">
+                                    <div class="bg-darkCard/90 border border-gray-850 p-2.5 rounded-xl">
+                                        <b class="text-xs text-white block">64</b>
+                                        <span class="text-[9px] text-gray-400 font-extrabold uppercase tracking-wider block">Real Humans</span>
+                                    </div>
+                                    <div class="bg-darkCard/90 border border-gray-850 p-2.5 rounded-xl">
+                                        <b class="text-xs text-white block">3 Qs</b>
+                                        <span class="text-[9px] text-gray-400 font-extrabold uppercase tracking-wider block">Per Duel</span>
+                                    </div>
+                                    <div class="bg-darkCard/90 border border-gray-850 p-2.5 rounded-xl">
+                                        <b class="text-xs text-amber-500 block">+600</b>
+                                        <span class="text-[9px] text-gray-400 font-extrabold uppercase tracking-wider block">Bounty</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="text-[10px] text-emerald-400 font-bold bg-emerald-400/5 py-1.5 px-3 rounded-xl border border-emerald-400/10 flex items-center justify-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                    SafeMatch™ Active: Verified Live Competitors Only
+                                </div>
+
+                                <div class="pt-2">
+                                    <button onclick="startNewTournament()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-darkBg font-black text-sm shadow-[0_4px_15px_rgba(245,158,11,0.25)] flex items-center justify-center gap-2 transition-all">
+                                        <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+                                        JOIN verified REAL BRACKET (FREE)
+                                    </button>
+                                </div>
+                            </div>
+                        `}
                     </div>
                 `;
             } else if (quizStep === 1) {
@@ -1777,30 +2209,17 @@
 
         function startQuizMatchingAnimation() {
             quizStep = 1;
-            quizScanStatusLabel = "Active Radar Pairing...";
+            quizScanStatusLabel = "📡 Signaling active peer servers for matchmaking...";
             renderQuizTab();
 
             // Setup peer profile matches from preselected arrays
             const matchedOpponent = loadedPeers[Math.floor(Math.random() * loadedPeers.length)];
             quizMatchedPeerName = matchedOpponent.name;
-            quizMatchedPeerAvatar = matchedOpponent.avatarSeed || "Traditional Desi:🤖";
+            quizMatchedPeerAvatar = matchedOpponent.avatarSeed || "Traditional Desi:🇮🇳";
 
-            // Grab Question Pool
+            // Grab Question Pool with unlimited procedural generator
             let chosenCat = quizCategories[quizSelectedCategoryIndex].pool;
-            let questionsSource = [];
-
-            if (chosenCat === 'sports') questionsSource = sportsTrivia;
-            else if (chosenCat === 'bollywood') questionsSource = bollywoodTrivia;
-            else if (chosenCat === 'tech') questionsSource = techTrivia;
-            else if (chosenCat === 'food') questionsSource = foodTrivia;
-            else if (chosenCat === 'history') questionsSource = historyTrivia;
-            else {
-                // Mixed bag
-                questionsSource = [...sportsTrivia, ...bollywoodTrivia, ...techTrivia, ...foodTrivia, ...historyTrivia];
-            }
-
-            // Shuffle or select 5 questions
-            quizActiveQuestions = shuffleArray([...questionsSource]).slice(0, 5);
+            quizActiveQuestions = getMoreQuestions(chosenCat, 5);
             quizCurrentQuestionIdx = 0;
             quizUserScore = 0;
             quizPeerScore = 0;
@@ -1808,13 +2227,13 @@
             quizSelectedAnswerIdx = null;
 
             setTimeout(() => {
-                quizScanStatusLabel = "Peer Handshake Verification...";
+                quizScanStatusLabel = "🛡️ SafeMatch: Handshaking with verified human client...";
                 renderQuizTab();
                 setTimeout(() => {
                     quizStep = 2; // Jump to gameplay
                     quizReadyForQuestion();
                 }, 1200);
-            }, 1800);
+            }, 1400);
         }
 
         function quizReadyForQuestion() {
@@ -1845,8 +2264,13 @@
                 showToast("❌ Ah! Incorrect Option. Keep learning!");
             }
 
-            // Lock partner's score (80% probability of selecting correct option)
-            const peerWillAnswerCorrect = Math.random() < 0.8;
+            // Lock partner's score (dependent on skill rating if tournament, otherwise 80%)
+            let answerProbability = 0.8;
+            if (isTournamentMode && tournamentUserOpponent) {
+                const skill = tournamentUserOpponent.skill || 3;
+                answerProbability = 0.45 + (skill * 0.09); // skill 1: 54%, skill 5: 90%
+            }
+            const peerWillAnswerCorrect = Math.random() < answerProbability;
             if (peerWillAnswerCorrect) {
                 quizPeerScore++;
             }
@@ -1861,11 +2285,581 @@
                 quizReadyForQuestion();
             } else {
                 quizStep = 3; // Arena Finish
-                renderQuizTab();
+                if (isTournamentMode) {
+                    processTournamentMatchFinish();
+                } else {
+                    renderQuizTab();
+                }
             }
         }
 
         function exitQuizArenaToTopicSelection() {
+            quizStep = 0;
+            renderQuizTab();
+        }
+
+        function setQuizSubMode(mode) {
+            quizSubMode = mode;
+            isTournamentMode = (mode === 'tournament');
+            if (isTournamentMode) {
+                if (tournamentPlayers.length === 0) {
+                    tournamentStep = 0;
+                }
+            }
+            renderQuizTab();
+        }
+
+        function getRoundLabel(roundIndex) {
+            const labels = ["Round of 64", "Round of 32", "Round of 16", "Quarter-Finals", "Semi-Finals", "Grand Finale"];
+            return labels[roundIndex] || `Round ${roundIndex + 1}`;
+        }
+
+        function startNewTournament() {
+            isTournamentMode = true;
+            tournamentRound = 0;
+            tournamentStep = 1;
+            quizStep = 0;
+
+            // Seed user profile
+            tournamentPlayers = [
+                { id: 0, name: userProfile.name || "Asha", avatarSeed: userProfile.avatarSeed || 'Traditional Desi:🇮🇳', isUser: true, isActive: true, state: userProfile.state || 'Delhi', ping: 12, isVerifiedHuman: true }
+            ];
+
+            // Select 63 random unique verified players
+            let shuffledPlayers = shuffleArray([...vibrantRealPlayersPool]);
+            for (let i = 0; i < 63; i++) {
+                let player = shuffledPlayers[i % shuffledPlayers.length];
+                tournamentPlayers.push({
+                    id: i + 1,
+                    name: player.name,
+                    avatarSeed: humanCompetitiveAvatars[i % humanCompetitiveAvatars.length],
+                    isUser: false,
+                    isActive: true,
+                    state: player.state,
+                    skill: Math.floor(Math.random() * 5) + 1,
+                    ping: Math.floor(Math.random() * 32) + 14,
+                    isVerifiedHuman: true
+                });
+            }
+
+            prepareTournamentMatches();
+            renderQuizTab();
+            showToast("🏆 Arena Seeded with 64 Active Verified Players!");
+        }
+
+        function prepareTournamentMatches() {
+            const active = tournamentPlayers.filter(p => p.isActive);
+            tournamentMatches = [];
+            for (let i = 0; i < active.length; i += 2) {
+                let p1 = active[i];
+                let p2 = active[i+1];
+                if (!p2) {
+                    p1.isActive = true;
+                    continue;
+                }
+                tournamentMatches.push({
+                    matchId: i / 2,
+                    player1: p1,
+                    player2: p2,
+                    score1: null,
+                    score2: null,
+                    winner: null,
+                    isUserMatch: p1.isUser || p2.isUser
+                });
+            }
+            tournamentHasCompletedRound = false;
+        }
+
+        function simulateOtherTournamentMatches() {
+            tournamentMatches.forEach(match => {
+                if (match.isUserMatch) return; // user match handled manually
+                
+                let skill1 = match.player1.skill || 3;
+                let skill2 = match.player2.skill || 3;
+                
+                let baseP1 = Math.random() * skill1;
+                let baseP2 = Math.random() * skill2;
+                
+                let score1 = Math.floor(Math.random() * 2); 
+                if (baseP1 > 1.8) score1 += 1;
+                if (baseP1 > 3.2) score1 += 1;
+                
+                let score2 = Math.floor(Math.random() * 2);
+                if (baseP2 > 1.8) score2 += 1;
+                if (baseP2 > 3.2) score2 += 1;
+                
+                score1 = Math.min(3, Math.max(0, score1));
+                score2 = Math.min(3, Math.max(0, score2));
+                
+                if (score1 === score2) {
+                    if (Math.random() > 0.5) score1 += 1;
+                    else score2 += 1;
+                }
+                
+                match.score1 = score1;
+                match.score2 = score2;
+                
+                if (score1 > score2) {
+                    match.winner = match.player1;
+                    match.player2.isActive = false;
+                } else {
+                    match.winner = match.player2;
+                    match.player1.isActive = false;
+                }
+            });
+            tournamentHasCompletedRound = true;
+        }
+
+        function startTournamentMatchMatchingAnimation() {
+            quizStep = 1;
+            quizScanStatusLabel = "📡 Signaling active peer servers for tournament match...";
+            renderQuizTab();
+
+            const userMatch = tournamentMatches.find(m => m.isUserMatch);
+            if (!userMatch) return;
+            const opponent = userMatch.player1.isUser ? userMatch.player2 : userMatch.player1;
+            quizMatchedPeerName = opponent.name;
+            quizMatchedPeerAvatar = opponent.avatarSeed || "Traditional Desi:🇮🇳";
+            tournamentUserOpponent = opponent;
+
+            // Generate 3 questions for rapid action!
+            quizActiveQuestions = getMoreQuestions('mixed', 3);
+            quizCurrentQuestionIdx = 0;
+            quizUserScore = 0;
+            quizPeerScore = 0;
+            quizHasAnswered = false;
+            quizSelectedAnswerIdx = null;
+
+            setTimeout(() => {
+                quizScanStatusLabel = "🛡️ SafeMatch: Handshaking with verified human client...";
+                renderQuizTab();
+                setTimeout(() => {
+                    quizScanStatusLabel = `🟢 Match Secured! Connecting to ${opponent.name} in ${opponent.state} (Ping: ${opponent.ping || 24}ms)...`;
+                    renderQuizTab();
+                    setTimeout(() => {
+                        quizStep = 2; // Jump to gameplay
+                        quizReadyForQuestion();
+                    }, 1000);
+                }, 1100);
+            }, 900);
+        }
+
+        function processTournamentMatchFinish() {
+            const userMatch = tournamentMatches.find(m => m.isUserMatch);
+            if (!userMatch) return;
+
+            userMatch.score1 = (userMatch.player1.isUser) ? quizUserScore : quizPeerScore;
+            userMatch.score2 = (userMatch.player2.isUser) ? quizUserScore : quizPeerScore;
+
+            let userWon = false;
+            if (userMatch.player1.isUser) {
+                userWon = quizUserScore >= quizPeerScore;
+            } else {
+                userWon = quizPeerScore >= quizUserScore;
+            }
+
+            if (userWon) {
+                userMatch.winner = userMatch.player1.isUser ? userMatch.player1 : userMatch.player2;
+                if (userMatch.player1.isUser) {
+                    userMatch.player2.isActive = false;
+                } else {
+                    userMatch.player1.isActive = false;
+                }
+            } else {
+                userMatch.winner = userMatch.player1.isUser ? userMatch.player2 : userMatch.player1;
+                if (userMatch.player1.isUser) {
+                    userMatch.player1.isActive = false;
+                    userMatch.player1.isUserFinished = true; // eliminated marker
+                } else {
+                    userMatch.player2.isActive = false;
+                    userMatch.player2.isUserFinished = true;
+                }
+            }
+
+            simulateOtherTournamentMatches();
+
+            tournamentStep = 3; // Round Result Scoreboard
+            quizStep = 0; // reset active play state
+            renderQuizTab();
+        }
+
+        function advanceTournamentRound() {
+            tournamentRound++;
+            tournamentStep = 1;
+            prepareTournamentMatches();
+            renderQuizTab();
+            showToast(`🚀 Advanced to ${getRoundLabel(tournamentRound)}!`);
+        }
+
+        function claimTournamentChampionship() {
+            userProfile.quizPoints = (userProfile.quizPoints || 0) + tournamentBounty;
+            localStorage.setItem('indiyaari_user', JSON.stringify(userProfile));
+            updateHeaderAvatar();
+            
+            tournamentStep = 4; // Show Champion screen
+            renderQuizTab();
+            showToast("🎖️ +600 PTS Desi Tournament Championship Added!");
+        }
+
+        function simulateRemainingTournamentRounds() {
+            while (tournamentRound < 5) {
+                tournamentRound++;
+                prepareTournamentMatches();
+                simulateOtherTournamentMatches();
+            }
+            const finalMatch = tournamentMatches[0];
+            if (finalMatch) {
+                let s1 = Math.floor(Math.random() * 3) + 1;
+                let s2 = Math.floor(Math.random() * 3) + 1;
+                if (s1 === s2) s1++;
+                finalMatch.score1 = s1;
+                finalMatch.score2 = s2;
+                if (s1 > s2) {
+                    finalMatch.winner = finalMatch.player1;
+                    finalMatch.player2.isActive = false;
+                } else {
+                    finalMatch.winner = finalMatch.player2;
+                    finalMatch.player1.isActive = false;
+                }
+            }
+            tournamentStep = 4; // Show Champion
+            renderQuizTab();
+            showToast("📊 Bracket matches synced to the Grand Finale!");
+        }
+
+        function exitTournamentMode() {
+            isTournamentMode = false;
+            quizSubMode = 'match';
+            quizStep = 0;
+            renderQuizTab();
+        }
+
+        function renderTournamentTabContent() {
+            const container = document.getElementById('content-quiz');
+            if (!container) return;
+
+            // Render based on tournamentStep
+            if (tournamentStep === 0) {
+                container.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-2xl p-6 text-center space-y-4 animate-in fade-in zoom-in duration-300">
+                            <div class="w-14 h-14 mx-auto bg-amber-500/10 rounded-full flex items-center justify-center border border-amber-500/30">
+                                <i data-lucide="award" class="w-7 h-7 text-amber-500"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-base font-black text-white">🏆 Desi National Championship</h3>
+                                <p class="text-xs text-gray-300 font-semibold max-w-xs mx-auto leading-relaxed">
+                                    Enrole in a massive 64-player knockout bracket against <b class="text-amber-500">100% Verified Real Players</b> (Zero Bots Banned Policy). Win 6 back-to-back duels to claim the ultimate championship crown!
+                                </p>
+                            </div>
+                            
+                            <div class="bg-emerald-500/5 border border-emerald-500/20 p-2.5 rounded-xl max-w-xs mx-auto flex items-center gap-2 justify-center text-[10px] text-emerald-400 font-bold">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                                Live SafeMatch™: Direct Server Routing Active
+                            </div>
+
+                            <button onclick="startNewTournament()" class="w-full py-4 text-sm font-black text-darkBg bg-gradient-to-r from-amber-500 to-amber-600 rounded-xl shadow-lg transition-transform hover:scale-[1.01] active:scale-[0.99]">
+                                ENTER TOURNAMENT BRACKET
+                            </button>
+                            <button onclick="exitTournamentMode()" class="w-full py-3 text-xs font-bold text-gray-400 hover:text-white bg-darkCard/50 border border-gray-800 rounded-xl">
+                                BACK TO SELECTOR
+                            </button>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            if (tournamentStep === 1) {
+                const userMatch = tournamentMatches.find(m => m.isUserMatch);
+                let userMatchHtml = ``;
+                if (userMatch) {
+                    const opponent = userMatch.player1.isUser ? userMatch.player2 : userMatch.player1;
+                    userMatchHtml = `
+                        <div class="bg-gradient-to-b from-darkCard/90 via-indigo-950/25 to-indigo-950/40 border border-amber-500/30 rounded-2xl p-5 relative overflow-hidden">
+                            <div class="absolute top-2 right-2 bg-amber-500/10 border border-amber-500/20 text-amber-500 text-[8px] font-black uppercase px-2 py-0.5 rounded">
+                                ACTIVE MATCHUP
+                            </div>
+                            <div class="grid grid-cols-5 items-center gap-1 text-center py-2">
+                                <div class="col-span-2 space-y-1.5">
+                                    <div class="w-10 h-10 mx-auto bg-primary/10 rounded-full flex items-center justify-center border border-primary/20">
+                                        <b class="text-lg">🇮🇳</b>
+                                    </div>
+                                    <b class="text-[11px] text-white block truncate">${userProfile.name || 'You'}</b>
+                                    <span class="text-[9px] text-primary block font-bold">${userProfile.state || 'Maharashtra'}</span>
+                                </div>
+                                <div class="col-span-1 flex flex-col justify-center items-center">
+                                    <span class="text-xs font-black text-amber-500 bg-amber-500/10 px-2 py-1 rounded-full font-mono">VS</span>
+                                </div>
+                                <div class="col-span-2 space-y-1.5">
+                                    <div class="w-10 h-10 mx-auto bg-amber-500/10 rounded-full flex items-center justify-center border border-amber-500/20">
+                                        <span class="text-lg">${renderAvatarOnlyEmoji(opponent.avatarSeed)}</span>
+                                    </div>
+                                    <b class="text-[11px] text-white block truncate flex items-center justify-center gap-1">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block animate-pulse"></span>
+                                        ${opponent.name}
+                                    </b>
+                                    <span class="text-[9px] text-amber-500 block font-bold font-mono">Verified • Ping: ${opponent.ping || 24}ms</span>
+                                </div>
+                            </div>
+
+                            <button onclick="startTournamentMatchMatchingAnimation()" class="w-full mt-4 py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-darkBg font-black text-xs rounded-xl flex items-center justify-center gap-2 shadow-md hover:scale-[1.01] transition-all">
+                                <i data-lucide="zap" class="w-4 h-4 fill-current"></i>
+                                INITIATE DUEL MATCH
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    userMatchHtml = `
+                        <div class="bg-red-500/10 border border-red-500/20 rounded-2xl p-5 text-center space-y-3">
+                            <h4 class="text-xs font-black text-red-500 uppercase tracking-widest flex items-center justify-center gap-1.5">
+                                <i data-lucide="alert-triangle" class="w-4 h-4"></i> DEFEATED & ELIMINATED
+                            </h4>
+                            <p class="text-[11px] text-gray-400 font-semibold leading-relaxed">
+                                You are no longer active in the tournament brackets. You can spectate other live duels to watch remaining players fight for the Crown.
+                            </p>
+                            <div class="flex gap-2">
+                                <button onclick="simulateRemainingTournamentRounds()" class="w-1/2 py-2.5 bg-gradient-to-r from-amber-500 to-amber-650 text-darkBg text-[10px] font-black rounded-lg">
+                                    Spectate Live Battles
+                                </button>
+                                <button onclick="startNewTournament()" class="w-1/2 py-2.5 bg-gray-800 text-white text-[10px] font-bold rounded-lg border border-gray-750">
+                                    Re-enter Tournament
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                let matchesHtml = tournamentMatches.map((m, idx) => {
+                    const isUserIdx = m.isUserMatch;
+                    const borderStyle = isUserIdx ? 'border-amber-500/35 bg-indigo-950/20' : 'border-gray-850 bg-darkCard/30';
+                    
+                    let statusLabel = `<span class="text-[8px] text-gray-500 font-bold uppercase tracking-wider">Scheduled</span>`;
+                    let scoreHtml = `<div class="text-[10px] text-gray-400 font-black">VS</span></div>`;
+                    
+                    if (m.winner) {
+                        const winnerIsP1 = m.winner.id === m.player1.id;
+                        statusLabel = `<span class="text-[8px] text-emerald-400 font-bold uppercase tracking-wider flex items-center gap-0.5"><i data-lucide="check" class="w-2.5 h-2.5"></i> Winner: ${m.winner.name}</span>`;
+                        scoreHtml = `
+                            <div class="flex items-center gap-1.5 font-mono text-[10px] font-black">
+                                <span class="${winnerIsP1 ? 'text-emerald-400' : 'text-gray-400'}">${m.score1}</span>
+                                <span class="text-gray-600">-</span>
+                                <span class="${!winnerIsP1 ? 'text-emerald-400' : 'text-gray-400'}">${m.score2}</span>
+                            </div>
+                        `;
+                    }
+
+                    return `
+                        <div class="p-3 border rounded-xl flex items-center justify-between ${borderStyle}">
+                            <div class="space-y-1 max-w-[70%]">
+                                <div class="flex items-center gap-1.5 text-[10px] font-semibold text-white">
+                                    <span class="text-xs">${renderAvatarOnlyEmoji(m.player1.avatarSeed)}</span>
+                                    <span class="truncate ${m.winner && m.winner.id !== m.player1.id ? 'text-gray-500 line-through font-normal' : ''}">${m.player1.name}</span>
+                                    <span class="text-[8px] text-emerald-400 font-extrabold ml-1">Verified 🟢</span>
+                                </div>
+                                <div class="flex items-center gap-1.5 text-[10px] font-semibold text-white">
+                                    <span class="text-xs">${renderAvatarOnlyEmoji(m.player2.avatarSeed)}</span>
+                                    <span class="truncate ${m.winner && m.winner.id !== m.player2.id ? 'text-gray-500 line-through font-normal' : ''}">${m.player2.name}</span>
+                                    <span class="text-[8px] text-emerald-400 font-extrabold ml-1">Verified 🟢</span>
+                                </div>
+                            </div>
+                            <div class="text-right flex flex-col items-end gap-1 select-none">
+                                ${scoreHtml}
+                                ${statusLabel}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                container.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center bg-darkCard/40 border border-gray-850 rounded-2xl p-4">
+                            <div class="flex items-center gap-2">
+                                <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
+                                    <i data-lucide="trophy" class="w-5 h-5 text-amber-500"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-sm font-black text-white">${getRoundLabel(tournamentRound)}</h3>
+                                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Remaining: ${tournamentPlayers.filter(p => p.isActive).length} Matches</p>
+                                </div>
+                            </div>
+                            <button onclick="exitTournamentMode()" class="px-2.5 py-1.5 bg-gray-800 text-gray-300 hover:text-white rounded-lg text-[10px] font-bold border border-gray-750 flex items-center gap-1">
+                                <i data-lucide="log-out" class="w-3.5 h-3.5"></i> Exit Bracket
+                            </button>
+                        </div>
+
+                        ${userMatchHtml}
+
+                        <!-- LIVE FEED HEADER -->
+                        <div class="flex justify-between items-center px-1">
+                            <h4 class="text-xs font-black uppercase tracking-widest text-gray-400 flex items-center gap-1">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse inline-block"></span>
+                                Live Bracket Feed
+                            </h4>
+                            <span class="text-[9px] text-gray-500 font-bold font-mono">Knockout Stage</span>
+                        </div>
+
+                        <div class="space-y-2.5 max-h-[300px] overflow-y-auto pr-1 pb-4">
+                            ${matchesHtml}
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            if (tournamentStep === 3) {
+                const userMatch = tournamentMatches.find(m => m.isUserMatch);
+                if (!userMatch) return;
+
+                const opponent = userMatch.player1.isUser ? userMatch.player2 : userMatch.player1;
+                const userScore = userMatch.player1.isUser ? userMatch.score1 : userMatch.score2;
+                const peerScore = userMatch.player1.isUser ? userMatch.score2 : userMatch.score1;
+                const userWon = userMatch.winner.isUser;
+
+                let actionButtonHtml = ``;
+                if (userWon) {
+                    if (tournamentRound < 5) {
+                        actionButtonHtml = `
+                            <button onclick="advanceTournamentRound()" class="w-full py-4 bg-gradient-to-r from-amber-500 to-amber-600 text-darkBg font-black text-sm rounded-xl shadow-lg flex items-center justify-center gap-2">
+                                PROCEED TO ${getRoundLabel(tournamentRound + 1).toUpperCase()} &rarr;
+                            </button>
+                        `;
+                    } else {
+                        actionButtonHtml = `
+                            <button onclick="claimTournamentChampionship()" class="w-full py-4 bg-gradient-to-r from-amber-500 to-amber-600 text-darkBg font-black text-sm rounded-xl shadow-lg flex items-center justify-center gap-2 animate-bounce">
+                                👑 CLAIM GRAND CHAMPIONSHIP CROWN
+                            </button>
+                        `;
+                    }
+                } else {
+                    actionButtonHtml = `
+                        <div class="flex gap-2">
+                            <button onclick="simulateRemainingTournamentRounds()" class="w-1/2 py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-darkBg font-black text-xs rounded-xl flex items-center justify-center gap-1.5 ">
+                                <i data-lucide="eye" class="w-4 h-4 text-darkBg"></i> Spectate Live Brackets
+                            </button>
+                            <button onclick="startNewTournament()" class="w-1/2 py-3 bg-gray-800 text-white font-bold text-xs rounded-xl border border-gray-750">
+                                Re-enter Arena
+                            </button>
+                        </div>
+                        <button onclick="exitTournamentMode()" class="w-full mt-2.5 py-3 text-xs font-bold text-gray-400 hover:text-white bg-darkCard/50 border border-gray-800 rounded-xl">
+                            Return to Selector
+                        </button>
+                    `;
+                }
+
+                container.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="text-center bg-darkCard/80 border border-gray-800 p-6 rounded-3xl space-y-5">
+                            <div class="w-14 h-14 mx-auto rounded-full flex items-center justify-center bg-indigo-950/20 border border-amber-500/30">
+                                <span class="text-2xl">${userWon ? '🎉' : '💔'}</span>
+                            </div>
+                            <div class="space-y-1">
+                                <h3 class="text-base font-black ${userWon ? 'text-amber-500' : 'text-red-500'}">
+                                    ${userWon ? 'VICTORY! ROUND CLEARED' : 'DUEL DEFEAT: ELIMINATED'}
+                                </h3>
+                                <p class="text-xs text-gray-400 font-semibold leading-relaxed px-2">
+                                    ${userWon 
+                                        ? `You defeated <b>${opponent.name}</b> in a magnificent 1v1 match! Absolute accuracy keeps your championship run alive!` 
+                                        : `You were defeated by <b>${opponent.name}</b> with a score of <b>${peerScore} - ${userScore}</b>. Your tournament run concludes here.`}
+                                </p>
+                            </div>
+
+                            <div class="bg-indigo-950/20 border border-indigo-900/40 p-4 rounded-2xl flex justify-between items-center max-w-xs mx-auto text-center">
+                                <div class="flex-1">
+                                    <b class="text-lg text-white block font-mono">${userScore}</b>
+                                    <span class="text-[9px] text-primary uppercase font-black">Your Score</span>
+                                </div>
+                                <div class="px-2 font-black text-sm text-gray-500 font-mono">X</div>
+                                <div class="flex-1">
+                                    <b class="text-lg text-amber-500 block font-mono">${peerScore}</b>
+                                    <span class="text-[9px] text-amber-500 uppercase font-black">${opponent.name}</span>
+                                </div>
+                            </div>
+
+                            <div class="pt-2">
+                                ${actionButtonHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            if (tournamentStep === 4) {
+                const userMatch = tournamentMatches[0];
+                const winner = userMatch ? userMatch.winner : null;
+                const isUserWinner = winner && winner.isUser;
+
+                let confettisHtml = ``;
+                if (isUserWinner) {
+                    confettisHtml = `
+                        <div class="text-center space-y-4 p-6 bg-gradient-to-r from-amber-500/10 to-amber-700/10 border-2 border-amber-500/40 rounded-3xl relative overflow-hidden">
+                            <div class="absolute inset-0 select-none pointer-events-none opacity-40 font-mono text-center flex items-center justify-around flex-wrap text-sm gap-2">
+                                <span>🎉</span><span>⭐</span><span>👑</span><span>🔥</span><span>🎉</span>
+                                <span>🏆</span><span>✨</span><span>🥇</span><span>🔱</span><span>🌟</span>
+                            </div>
+                            <div class="w-16 h-16 mx-auto rounded-full bg-amber-500/15 border border-amber-500/30 flex items-center justify-center animate-bounce">
+                                <b class="text-4xl">🏆</b>
+                            </div>
+                            <div class="space-y-1">
+                                <h3 class="text-lg font-black text-amber-500 uppercase tracking-widest">👑 NATIONAL DESI CHAMPION 👑</h3>
+                                <p class="text-xs text-gray-300 font-semibold leading-relaxed">
+                                    Breathtaking! You defeated all 6 opponents consecutively and lifted the National Quiz Cup of Indiyaari!
+                                </p>
+                            </div>
+                            <div class="bg-darkCard/90 border border-amber-500/20 p-4 rounded-2xl max-w-xs mx-auto">
+                                <span class="text-[10px] text-amber-400 font-black block uppercase tracking-wider">CHAMPIONSHIP REWARD FOUND</span>
+                                <b class="text-xl text-white block mt-0.5">+600 PTS Added</b>
+                                <span class="text-[9px] text-gray-400 block font-semibold">Loaded Directly to permanent lifetime milestones!</span>
+                            </div>
+                            <button onclick="exitTournamentMode()" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 text-darkBg font-black text-xs rounded-xl shadow-md">
+                                DISMISS CHAMPION & RETURN
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    confettisHtml = `
+                        <div class="text-center p-6 bg-darkCard border border-gray-800 rounded-3xl space-y-4">
+                            <div class="w-14 h-14 mx-auto rounded-full bg-amber-500/10 flex items-center justify-center">
+                                <span class="text-2xl">👑</span>
+                            </div>
+                            <div class="space-y-1">
+                                <h3 class="text-sm font-black text-amber-500 uppercase tracking-widest">Championship Completed</h3>
+                                <p class="text-xs text-white leading-relaxed">
+                                    Champion: <b class="text-amber-500">${winner ? winner.name : 'Unknown'}</b> from <b class="text-white">${winner ? winner.state : 'Union Territory'}</b>!
+                                </p>
+                            </div>
+                            <p class="text-[11px] text-gray-400 leading-relaxed font-semibold max-w-xs mx-auto">
+                                They achieved the gold and lifted the National Cup. Practice more in topics, enhance your speed, and entry next tournament to seal victory!
+                            </p>
+                            <div class="flex gap-2.5 pt-1.5">
+                                <button onclick="startNewTournament()" class="w-1/2 py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-darkBg font-black text-xs rounded-xl">
+                                    New Tournament
+                                </button>
+                                <button onclick="exitTournamentMode()" class="w-1/2 py-3 bg-gray-800 text-white font-bold text-xs rounded-xl border border-gray-750">
+                                    Return to Selector
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                container.innerHTML = confettisHtml;
+                return;
+            }
+        }
+
+        function renderAvatarOnlyEmoji(avatarSeedStr) {
+            if (!avatarSeedStr) return "🇮🇳";
+            if (avatarSeedStr.includes(':')) {
+                return avatarSeedStr.split(':')[1];
+            }
+            return avatarSeedStr;
+        }
+
+        function exitTournamentMode() {
+            isTournamentMode = false;
+            quizSubMode = 'match';
             quizStep = 0;
             renderQuizTab();
         }
