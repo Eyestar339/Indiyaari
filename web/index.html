@@ -25,13 +25,13 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body class="bg-darkBg text-gray-100 h-screen h-[100dvh] flex flex-col font-sans selection:bg-primary selection:text-darkBg antialiased overflow-hidden">
+<body class="bg-darkBg text-gray-100 h-screen h-[100dvh] flex items-center justify-center font-sans selection:bg-primary selection:text-darkBg antialiased overflow-hidden">
 
     <!-- Toast Notifications -->
     <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-sm"></div>
 
     <!-- App Wrapper (Mobile Aspect-Ratio Container on Desktop, Fluid on Mobile) -->
-    <div id="app" class="h-full max-h-screen max-h-[100dvh] w-full max-w-md mx-auto flex flex-col shadow-2xl relative bg-darkCard border-x border-gray-800 overflow-hidden">
+    <div id="app" class="h-full w-full sm:max-w-[420px] sm:h-[880px] sm:max-h-[92vh] sm:my-auto sm:rounded-[36px] sm:border sm:border-gray-800/80 sm:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.85)] mx-auto flex flex-col relative bg-darkCard overflow-hidden transition-all duration-300">
         
         <!-- ================= PROFILE SETUP VIEW ================= -->
         <div id="view-setup" class="flex-1 flex flex-col justify-start p-6 overflow-y-auto">
@@ -397,19 +397,6 @@
 
             </div>
 
-            <!-- Permanent Polite Safe Communication Guidance Box -->
-            <div class="bg-gray-800/25 border border-gray-800/60 rounded-2xl p-4 mt-2 mb-6 mx-4">
-                <div class="flex flex-col gap-2">
-                    <div class="text-[11px] font-bold text-primary flex items-center justify-center gap-1.5 mb-1 text-center">
-                        🇮🇳 Community Rules for Polite Chatting
-                    </div>
-                    <div class="h-[1px] bg-gray-800/50 my-1"></div>
-                    <p class="text-[10px] text-gray-400 font-medium">📌 <b class="text-gray-300">1. Message Politely:</b> Always greet your match with respect (e.g. Namaste / Hello). Be polite and warm.</p>
-                    <p class="text-[10px] text-gray-400 font-medium">📌 <b class="text-gray-300">2. Respect Differences:</b> You are matching with peers across different Indian regions and languages. Please celebrate this diversity.</p>
-                    <p class="text-[10px] text-gray-400 font-medium">📌 <b class="text-gray-300">3. Stay Cyber-Secure:</b> For security goals, do not share personal telephone numbers, bank pins, or addresses.</p>
-                    <p class="text-[10px] text-gray-400 font-medium">📌 <b class="text-gray-300">4. Gentle Skipper:</b> If the match feels incompatible, simply tap the 'Skip' button politely to find a new connection.</p>
-                </div>
-            </div>
         </div>
 
         <!-- ================= CHAT COMPONENT (SCREEN TAKE OVER) ================= -->
@@ -702,9 +689,23 @@
             </div>
 
             <!-- Interactive Terminal Console Logger -->
-            <div class="bg-darkBg rounded-xl p-3 border border-gray-800 font-mono text-[10px] space-y-1 h-32 overflow-y-auto text-gray-400 shadow-inner" id="handshake-logs">
+            <div class="bg-darkBg rounded-xl p-2.5 border border-gray-800 font-mono text-[9px] space-y-0.5 h-20 overflow-y-auto text-gray-400 shadow-inner" id="handshake-logs">
                 <div class="text-teal-400 font-bold">&gt; Anti-bot validation cleared.</div>
                 <div class="text-gray-500">&gt; Starting secure handshake...</div>
+            </div>
+
+            <!-- Community Rules for Polite Chatting (Shown ONLY during skip / connection matchmaking!) -->
+            <div class="bg-primary/5 border border-primary/20 rounded-xl p-3.5 space-y-2 shadow-[0_4px_15px_rgba(0,0,0,0.2)]">
+                <div class="text-[10px] font-black text-primary flex items-center justify-center gap-1 uppercase tracking-wider mb-0.5">
+                    <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i> Polite Match Rules
+                </div>
+                <div class="h-[1px] bg-primary/10"></div>
+                <div class="space-y-1 text-[9px] text-gray-300 leading-normal">
+                    <p class="flex items-start gap-1"><span class="text-primary font-bold">📌</span> <span><b>Greet Respectfully:</b> Greet your match politely (e.g., Namaste / Hello). Be polite and warm.</span></p>
+                    <p class="flex items-start gap-1"><span class="text-primary font-bold">📌</span> <span><b>Celebrate Diversity:</b> Peers are from diverse Indian regions and languages. Please celebrate this.</span></p>
+                    <p class="flex items-start gap-1"><span class="text-primary font-bold">📌</span> <span><b>Cyber Safety:</b> Never share phone numbers, PINs, or bank/address details.</span></p>
+                    <p class="flex items-start gap-1"><span class="text-primary font-bold">📌</span> <span><b>Gentle Skipper:</b> If incompatible, tap 'Skip' button politely to connection.</span></p>
+                </div>
             </div>
 
             <!-- Connecting Status Tip -> Simulated live signal rate -->
