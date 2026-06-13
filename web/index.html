@@ -24,8 +24,70 @@
     </script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Modern scrollbar hiding */
+        .scrollbar-none::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-none {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Mobile safe-area paddings to prevent clipping inside screen borders */
+        .pb-safe {
+            padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+        }
+
+        /* WhatsApp Doodle pattern theme */
+        .whatsapp-bg {
+            background-color: #0b141a !important;
+            background-image: 
+                radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                radial-gradient(rgba(255,255,255,0.015) 2px, transparent 2px);
+            background-size: 24px 24px;
+            background-position: 0 0, 12px 12px;
+            position: relative;
+        }
+
+        /* Message tail arrows for authentic WhatsApp appearance */
+        .bubble-out {
+            position: relative;
+            background-color: #005c4b !important;
+            color: #e9edef !important;
+            border-radius: 12px 0px 12px 12px !important;
+            border: none !important;
+        }
+        .bubble-out::after {
+            content: '';
+            position: absolute;
+            right: -5px;
+            top: 0;
+            width: 0;
+            height: 0;
+            border-left: 8px solid #005c4b;
+            border-bottom: 8px solid transparent;
+        }
+        .bubble-in {
+            position: relative;
+            background-color: #202c33 !important;
+            color: #e9edef !important;
+            border-radius: 0px 12px 12px 12px !important;
+            border: none !important;
+        }
+        .bubble-in::after {
+            content: '';
+            position: absolute;
+            left: -5px;
+            top: 0;
+            width: 0;
+            height: 0;
+            border-right: 8px solid #202c33;
+            border-bottom: 8px solid transparent;
+        }
+    </style>
 </head>
-<body class="bg-darkBg text-gray-100 h-screen h-[100dvh] flex items-center justify-center font-sans selection:bg-primary selection:text-darkBg antialiased overflow-hidden">
+<body class="bg-[#0b0b14] bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(167,139,250,0.11),rgba(255,255,255,0))] text-gray-100 h-screen h-[100dvh] flex items-center justify-center font-sans selection:bg-primary selection:text-darkBg antialiased overflow-hidden">
 
     <!-- Toast Notifications -->
     <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-sm"></div>
@@ -47,7 +109,7 @@
             </div>
 
             <!-- Form -->
-            <div class="space-y-5">
+            <div class="space-y-5 pb-12">
                 <!-- Name input -->
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Display Name</label>
@@ -148,25 +210,17 @@
                     <!-- Occupation -->
                     <div>
                         <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-1.5">Occupation (Optional)</label>
-                        <select id="setup-occupation" class="w-full bg-darkBg border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary">
-                            <option value="Prefer not to say (Optional)" selected>Prefer not to say (Optional)</option>
-                            <option value="Software Engineer">Software Engineer</option>
-                            <option value="Indian Classical Dancer">Indian Classical Dancer</option>
-                            <option value="UI/UX Designer">UI/UX Designer</option>
-                            <option value="Culinary Chef">Culinary Chef</option>
-                            <option value="Sitar Player">Sitar Player</option>
-                            <option value="Startup Founder">Startup Founder</option>
-                            <option value="Street Art Painter">Street Art Painter</option>
-                            <option value="Cricket Coach">Cricket Coach</option>
-                            <option value="Medical Student">Medical Student</option>
-                            <option value="Indie Photographer">Indie Photographer</option>
-                        </select>
+                        <input type="text" id="setup-occupation" placeholder="Type occupation (e.g., Software Engineer, Student)" class="w-full bg-darkBg border border-gray-700 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-primary transition-all duration-200">
                     </div>
                 </div>
 
-                <!-- Interests Multi-select -->
+                <!-- Interests Multi-select with Custom Tagger -->
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Interests (Optional)</label>
+                    <div class="flex gap-2 mb-3">
+                        <input type="text" id="setup-interest-input" placeholder="Type custom interest (e.g., Coding, Cricket)..." class="flex-1 bg-darkBg border border-gray-700 rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-primary">
+                        <button type="button" onclick="addCustomInterestFromInput()" class="px-4 bg-primary text-darkBg rounded-xl text-xs font-bold hover:bg-opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-1 shrink-0">Add</button>
+                    </div>
                     <div class="flex flex-wrap gap-2" id="interests-pool">
                         <!-- Loaded dynamically -->
                     </div>
@@ -513,7 +567,7 @@
             </div>
 
             <!-- Dialogue Scroll Board -->
-            <div id="chat-messages-container" class="flex-1 p-4 overflow-y-auto space-y-3 flex flex-col bg-darkBg/30">
+            <div id="chat-messages-container" class="flex-1 p-4 overflow-y-auto space-y-3 flex flex-col whatsapp-bg scrollbar-none">
                 <!-- Dynamic chats -->
             </div>
 
@@ -892,18 +946,35 @@
             loadProfileFromHistory();
             lucide.createIcons();
             validateSetupForm();
+
+            const setupInterestInput = document.getElementById('setup-interest-input');
+            if (setupInterestInput) {
+                setupInterestInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        addCustomInterestFromInput();
+                    }
+                });
+            }
         });
 
         // Initialize Interest tags
         function initInterests() {
             const container = document.getElementById('interests-pool');
+            if (!container) return;
             container.innerHTML = '';
             interestsPool.forEach(interest => {
                 const button = document.createElement('button');
                 button.type = 'button';
                 button.onclick = () => toggleInterest(interest);
-                button.id = `interest-tag-${interest.toLowerCase()}`;
-                button.className = "px-3 py-2 bg-darkBg border border-gray-700 hover:border-gray-500 rounded-xl text-xs font-semibold text-gray-300 transition-all";
+                button.id = `interest-tag-${interest.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
+                
+                const isSelected = userProfile.interests.includes(interest);
+                if (isSelected) {
+                    button.className = "px-3 py-2 bg-primary/20 border-2 border-primary rounded-xl text-xs font-bold text-primary transition-all shadow-[0_0_10px_rgba(167,139,250,0.1)]";
+                } else {
+                    button.className = "px-3 py-2 bg-darkBg border border-gray-700 hover:border-gray-500 rounded-xl text-xs font-semibold text-gray-300 transition-all";
+                }
                 button.innerText = interest;
                 container.appendChild(button);
             });
@@ -912,14 +983,41 @@
         // Toggle selections
         function toggleInterest(interest) {
             const idx = userProfile.interests.indexOf(interest);
-            const element = document.getElementById(`interest-tag-${interest.toLowerCase()}`);
+            const element = document.getElementById(`interest-tag-${interest.toLowerCase().replace(/[^a-z0-9]/g, '_')}`);
             if (idx === -1) {
                 userProfile.interests.push(interest);
-                element.className = "px-3 py-2 bg-primary/20 border-2 border-primary rounded-xl text-xs font-bold text-primary transition-all shadow-[0_0_10px_rgba(167,139,250,0.1)]";
+                if (element) {
+                    element.className = "px-3 py-2 bg-primary/20 border-2 border-primary rounded-xl text-xs font-bold text-primary transition-all shadow-[0_0_10px_rgba(167,139,250,0.1)]";
+                }
             } else {
                 userProfile.interests.splice(idx, 1);
-                element.className = "px-3 py-2 bg-darkBg border border-gray-700 hover:border-gray-500 rounded-xl text-xs font-semibold text-gray-300 transition-all";
+                if (element) {
+                    element.className = "px-3 py-2 bg-darkBg border border-gray-700 hover:border-gray-500 rounded-xl text-xs font-semibold text-gray-300 transition-all";
+                }
             }
+            validateSetupForm();
+        }
+
+        // Custom Typer function for interests
+        function addCustomInterestFromInput() {
+            const input = document.getElementById('setup-interest-input');
+            if (!input) return;
+            const value = input.value.trim();
+            if (!value) return;
+            
+            // Format first letter capitalized
+            const formatted = value.charAt(0).toUpperCase() + value.slice(1);
+            
+            // Add to pools
+            if (!interestsPool.includes(formatted)) {
+                interestsPool.push(formatted);
+            }
+            if (!userProfile.interests.includes(formatted)) {
+                userProfile.interests.push(formatted);
+            }
+            
+            input.value = '';
+            initInterests();
             validateSetupForm();
         }
 
@@ -1043,6 +1141,14 @@
                 userProfile = parsed;
                 if (!userProfile.quizPoints) userProfile.quizPoints = 0;
                 if (!userProfile.avatarSeed) userProfile.avatarSeed = 'Traditional Desi:🇮🇳';
+                if (!userProfile.interests) userProfile.interests = [];
+
+                // Inject saved custom interests back into pool on load list
+                parsed.interests.forEach(interest => {
+                    if (!interestsPool.includes(interest)) {
+                        interestsPool.push(interest);
+                    }
+                });
 
                 document.getElementById('setup-name').value = parsed.name;
                 selectGender(parsed.gender);
@@ -1051,12 +1157,10 @@
                 if (document.getElementById('setup-occupation')) {
                     document.getElementById('setup-occupation').value = parsed.occupation || 'Prefer not to say (Optional)';
                 }
-                parsed.interests.forEach(interest => {
-                    const tag = document.getElementById(`interest-tag-${interest.toLowerCase()}`);
-                    if (tag) {
-                        tag.className = "px-3 py-2 bg-primary/20 border-2 border-primary rounded-xl text-xs font-bold text-primary transition-all shadow-[0_0_10px_rgba(167,139,250,0.1)]";
-                    }
-                });
+                
+                // Re-render the pool which now correctly draws selected custom interests
+                initInterests();
+
                 document.getElementById('setup-terms').checked = true;
                 
                 saveProfile(true);
@@ -2293,17 +2397,19 @@
                 }
             }
 
+            const timeStr = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
             if (isMe) {
                 if (isSticker) {
-                    bubble.className = "self-end max-w-[85%] bg-primary/20 border border-primary/40 rounded-2xl p-4 text-xs font-semibold shadow-md flex flex-col items-center gap-2 transform rotate-1 transition-all hover:rotate-0 duration-300";
+                    bubble.className = "self-end max-w-[85%] bg-[#005c4b]/30 border border-[#005c4b]/40 rounded-2xl p-4 text-xs font-semibold shadow-md flex flex-col items-center gap-2 transform rotate-1 transition-all hover:rotate-0 duration-300";
                 } else {
-                    bubble.className = "self-end max-w-[85%] bg-primary text-darkBg rounded-2xl rounded-tr-none py-2 px-3.5 text-xs font-semibold leading-relaxed shadow-sm relative";
+                    bubble.className = "self-end max-w-[85%] bg-[#005c4b] text-[#e9edef] py-2 px-3.5 text-xs font-medium leading-relaxed shadow-sm relative bubble-out";
                 }
             } else {
                 if (isSticker) {
-                    bubble.className = "self-start max-w-[85%] bg-gray-800/40 border border-gray-750/50 rounded-2xl p-4 text-xs font-medium shadow-md flex flex-col items-center gap-2 transform -rotate-1 transition-all hover:rotate-0 duration-300";
+                    bubble.className = "self-start max-w-[85%] bg-[#202c33]/40 border border-gray-750/50 rounded-2xl p-4 text-xs font-medium shadow-md flex flex-col items-center gap-2 transform -rotate-1 transition-all hover:rotate-0 duration-300";
                 } else {
-                    bubble.className = "self-start max-w-[85%] bg-gray-800 text-gray-200 rounded-2xl rounded-tl-none py-2 px-3.5 text-xs font-medium leading-relaxed border border-gray-750 relative";
+                    bubble.className = "self-start max-w-[85%] bg-[#202c33] text-[#e9edef] py-2 px-3.5 text-xs font-medium leading-relaxed border border-gray-750/30 relative bubble-in";
                 }
             }
 
@@ -2312,15 +2418,23 @@
 
             if (isSticker) {
                 bubble.innerHTML = `
-                    ${!isMe ? `<span class="block text-[9px] text-primary/80 font-black uppercase mb-1.5 align-self-start w-full text-left">${sender}</span>` : ''}
+                    ${!isMe ? `<span class="block text-[9px] text-[#53bdeb] font-black uppercase mb-1.5 align-self-start w-full text-left">${sender}</span>` : ''}
                     <div class="text-3xl animate-bounce my-0.5">${stickerEmoji}</div>
-                    <div class="bg-darkBg border border-gray-850 px-2 py-0.5 rounded-full text-[8px] uppercase font-black tracking-widest text-primary font-mono shadow-sm">${stickerTitle}</div>
+                    <div class="bg-darkBg/60 border border-gray-800 px-2 py-0.5 rounded-full text-[8px] uppercase font-black tracking-widest text-[#53bdeb] font-mono shadow-sm">${stickerTitle}</div>
+                    <div class="flex items-center justify-end gap-1 mt-1.5 text-[8px] text-gray-400 font-mono select-none w-full">
+                        <span>${timeStr}</span>
+                        ${isMe ? `<span class="text-[#34b7f1] ml-0.5 font-bold">✓✓</span>` : ''}
+                    </div>
                     ${disappearingTag}
                 `;
             } else {
                 bubble.innerHTML = `
-                    ${!isMe ? `<span class="block text-[9px] text-primary/80 font-black uppercase mb-0.5">${sender}</span>` : ''}
-                    <span>${text}</span>
+                    ${!isMe ? `<span class="block text-[9px] text-[#34b7f1] font-black uppercase mb-0.5">${sender}</span>` : ''}
+                    <div class="text-xs break-words">${text}</div>
+                    <div class="flex items-center justify-end gap-1 mt-1 text-[8px] text-gray-400 font-mono select-none">
+                        <span>${timeStr}</span>
+                        ${isMe ? `<span class="text-[#34b7f1] ml-0.5 font-bold">✓✓</span>` : ''}
+                    </div>
                     ${disappearingTag}
                 `;
             }
